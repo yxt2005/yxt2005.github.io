@@ -26,7 +26,7 @@
 <meta property="og:description" content="我们在学习过程中，尤其是碎片化的学习中，经常需要通过写一些博客记录学习过程。因此，搭建一个简洁的个人博客网站可以让我们的学习更加体系。GitHub 作为全球知名的开源代码托管平台，为我们提供了稳定且免费的存储服务，而 Hexo 作为一款基于 Node.js 的快速、简洁、高效的静态博客框架，两者结合，为我们打造个人博客带来了极大的便利，能让我们轻松搭建出既美观又功能丰富的博客。 (1) 准备工作">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-08-07T10:36:09.000Z">
-<meta property="article:modified_time" content="2025-08-08T13:49:17.430Z">
+<meta property="article:modified_time" content="2025-08-22T08:18:19.351Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Hexo">
 <meta property="article:tag" content="博客搭建">
@@ -249,7 +249,7 @@
   <div class="widget">
     <h3 class="widget-title">Archive</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a><span class="archive-list-count">6</span></li></ul>
     </div>
   </div>
 
@@ -261,6 +261,21 @@
     <div class="widget-body">
       <ul class="recent-post-list list-unstyled no-thumbnail">
         
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/22/%E4%BB%8E%E8%BF%9C%E7%A8%8BGit%E4%BB%93%E5%BA%93pull-push%E5%86%85%E5%AE%B9/" class="title">从远程Git仓库pull/push内容</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-22T08:15:20.000Z" itemprop="datePublished">2025-08-22</time>
+              </p>
+            </div>
+          </li>
+          
           <li>
             
             <div class="item-inner">
@@ -317,21 +332,6 @@
               </p>
               <p class="item-date">
                 <time datetime="2025-08-07T10:36:09.000Z" itemprop="datePublished">2025-08-07</time>
-              </p>
-            </div>
-          </li>
-          
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                
-              </p>
-              <p class="item-title">
-                <a href="/2025/08/07/hello-world/" class="title">Hello World</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2025-08-07T09:06:42.447Z" itemprop="datePublished">2025-08-07</time>
               </p>
             </div>
           </li>
@@ -435,9 +435,15 @@
 </li>
 </ol>
 <h3 id="（3）创建博客"><a href="#（3）创建博客" class="headerlink" title="（3）创建博客"></a>（3）创建博客</h3><ol>
-<li>博客目录下运行：<code>hexo new &quot;文章标题&quot;</code></li>
-<li>使用文本编辑器或Typora编写</li>
-<li>本地预览：<code>hexo s</code></li>
+<li><p>博客目录（F:\myblog\blog）下运行：<code>hexo new &quot;文章标题&quot;</code></p>
+<p>或直接本地创建markdown文件，参考4.4</p>
+</li>
+<li><p>使用文本编辑器或Typora编写</p>
+</li>
+<li><p>本地预览：<code>hexo s</code></p>
+</li>
+<li><p>将博客部署到github:生成静态文件并上传</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g --d</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h3 id="4-将博客部署到github"><a href="#4-将博客部署到github" class="headerlink" title="(4)  将博客部署到github"></a>(4)  将博客部署到github</h3><ol>
 <li><p>创建github仓库：</p>
