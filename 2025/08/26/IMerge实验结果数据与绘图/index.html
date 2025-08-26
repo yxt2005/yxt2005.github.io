@@ -25,15 +25,10 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="一、不同融合方案的吞吐量对比由于原始数据缺失，只剩下论文里的柱状图，可以使用 WebPlotDigitizer 提取柱状图数据。 ResNet18 吞吐量    # of GPUs 静态阈值融合 自适应融合（基于AllReduce） 自适应融合（基于PS模型）    4 935 952 970   8 1833 1534 1886   16 3544 1992 3649   32 5501 294">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826145006280.png">
-<meta property="og:image" content="http://example.com/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826145335973.png">
-<meta property="og:image" content="http://example.com/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826145719942.png">
-<meta property="og:image" content="http://example.com/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826150043509.png">
 <meta property="article:published_time" content="2025-08-26T05:26:14.000Z">
-<meta property="article:modified_time" content="2025-08-26T07:10:46.988Z">
+<meta property="article:modified_time" content="2025-08-26T12:33:00.964Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826145006280.png">
   <!-- Canonical links -->
   <link rel="canonical" href="http://example.com/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/index.html">
   
@@ -388,7 +383,7 @@
     <div class="article-entry marked-body" itemprop="articleBody">
       
         <h2 id="一、不同融合方案的吞吐量对比"><a href="#一、不同融合方案的吞吐量对比" class="headerlink" title="一、不同融合方案的吞吐量对比"></a>一、不同融合方案的吞吐量对比</h2><p>由于原始数据缺失，只剩下论文里的柱状图，可以使用 <a target="_blank" rel="noopener" href="https://automeris.io/">WebPlotDigitizer</a> 提取柱状图数据。</p>
-<p>ResNet18 吞吐量</p>
+<p><strong>ResNet18 吞吐量</strong></p>
 <table>
 <thead>
 <tr>
@@ -423,8 +418,7 @@
 <td>6224</td>
 </tr>
 </tbody></table>
-<p><img src="/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826145006280.png" alt="image-20250826145006280"></p>
-<p>VGG16 吞吐量</p>
+<p><strong>Vgg16 吞吐量</strong></p>
 <table>
 <thead>
 <tr>
@@ -459,8 +453,7 @@
 <td>6052</td>
 </tr>
 </tbody></table>
-<p><img src="/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826145335973.png" alt="image-20250826145335973"></p>
-<p>AlexNet</p>
+<p><strong>AlexNet</strong></p>
 <table>
 <thead>
 <tr>
@@ -495,8 +488,7 @@
 <td>25648</td>
 </tr>
 </tbody></table>
-<p><img src="/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826145719942.png" alt="image-20250826145719942"></p>
-<p>ResNet50</p>
+<p><strong>ResNet50</strong></p>
 <table>
 <thead>
 <tr>
@@ -531,7 +523,185 @@
 <td>2565</td>
 </tr>
 </tbody></table>
-<p><img src="/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/image-20250826150043509.png" alt="image-20250826150043509"></p>
+<h2 id="二、不同调度方案吞吐量对比"><a href="#二、不同调度方案吞吐量对比" class="headerlink" title="二、不同调度方案吞吐量对比"></a>二、不同调度方案吞吐量对比</h2><p><strong>ResNet18</strong></p>
+<table>
+<thead>
+<tr>
+<th># of GPUs</th>
+<th>默认</th>
+<th>WFBP</th>
+<th>基于优先级传输</th>
+<th>MG-WFBP</th>
+<th>IMerge</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>806</td>
+<td>928</td>
+<td>897</td>
+<td>958</td>
+<td>989</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1460</td>
+<td>1810</td>
+<td>1704</td>
+<td>1871</td>
+<td>1933</td>
+</tr>
+<tr>
+<td>16</td>
+<td>2206</td>
+<td>3226</td>
+<td>2510</td>
+<td>3667</td>
+<td>3941</td>
+</tr>
+<tr>
+<td>32</td>
+<td>3606</td>
+<td>4854</td>
+<td>2906</td>
+<td>6239</td>
+<td>6650</td>
+</tr>
+</tbody></table>
+<p>Bar0, 806.5217391304353<br>Bar1, 928.2608695652178<br>Bar2, 897.8260869565225<br>Bar3, 958.6956521739131<br>Bar4, 989.1304347826084<br>Bar5, 1460.8695652173915<br>Bar6, 1810.8695652173922<br>Bar7, 1704.3478260869565<br>Bar8, 1871.7391304347827<br>Bar9, 1993.478260869565<br>Bar10, 2206.521739130435<br>Bar11, 3226.0869565217395<br>Bar12, 2510.8695652173915<br>Bar13, 3667.391304347826<br>Bar14, 3941.3043478260875<br>Bar15, 3606.521739130435<br>Bar16, 4854.347826086957<br>Bar17, 2906.5217391304354<br>Bar18, 6239.13043478261<br>Bar19, 6650.000000000001</p>
+<p><strong>Vgg16 吞吐量</strong></p>
+<table>
+<thead>
+<tr>
+<th># of GPUs</th>
+<th>默认</th>
+<th>WFBP</th>
+<th>基于优先级传输</th>
+<th>MG-WFBP</th>
+<th>IMerge</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>848</td>
+<td>959</td>
+<td>885</td>
+<td>995</td>
+<td>1143</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1420</td>
+<td>1918</td>
+<td>1438</td>
+<td>1991</td>
+<td>2157</td>
+</tr>
+<tr>
+<td>16</td>
+<td>1696</td>
+<td>3282</td>
+<td>1991</td>
+<td>3836</td>
+<td>4297</td>
+</tr>
+<tr>
+<td>32</td>
+<td>2747</td>
+<td>4370</td>
+<td>2323</td>
+<td>6049</td>
+<td>8409</td>
+</tr>
+</tbody></table>
+<p>Bar0, 848.3606557377059<br>Bar1, 959.0163934426239<br>Bar2, 885.245901639346<br>Bar3, 995.9016393442639<br>Bar4, 1143.44262295082<br>Bar5, 1420.081967213115<br>Bar6, 1918.032786885247<br>Bar7, 1438.524590163936<br>Bar8, 1991.8032786885249<br>Bar9, 2157.786885245902<br>Bar10, 1696.72131147541<br>Bar11, 3282.786885245902<br>Bar12, 1991.8032786885249<br>Bar13, 3836.065573770493<br>Bar14, 4297.131147540984<br>Bar15, 2747.9508196721313<br>Bar16, 4370.901639344263<br>Bar17, 2323.7704918032796<br>Bar18, 6049.180327868853<br>Bar19, 8409.836065573772</p>
+<p><strong>AlexNet</strong></p>
+<table>
+<thead>
+<tr>
+<th># of GPUs</th>
+<th>默认</th>
+<th>WFBP</th>
+<th>基于优先级传输</th>
+<th>MG-WFBP</th>
+<th>IMerge</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>3141</td>
+<td>3739</td>
+<td>3365</td>
+<td>4487</td>
+<td>4561</td>
+</tr>
+<tr>
+<td>8</td>
+<td>5833</td>
+<td>7329</td>
+<td>6506</td>
+<td>8076</td>
+<td>8749</td>
+</tr>
+<tr>
+<td>16</td>
+<td>9722</td>
+<td>13685</td>
+<td>10544</td>
+<td>14882</td>
+<td>16752</td>
+</tr>
+<tr>
+<td>32</td>
+<td>15779</td>
+<td>21463</td>
+<td>13012</td>
+<td>25876</td>
+<td>31335</td>
+</tr>
+</tbody></table>
+<p>Bar0, 3141.0256410256393<br>Bar1, 3739.316239316238<br>Bar2, 3365.3846153846134<br>Bar3, 4487.1794871794855<br>Bar4, 4561.96581196581<br>Bar5, 5833.33333333333<br>Bar6, 7329.0598290598255<br>Bar7, 6506.410256410253<br>Bar8, 8076.923076923073<br>Bar9, 8749.999999999996<br>Bar10, 9722.222222222217<br>Bar11, 13685.897435897434<br>Bar12, 10544.871794871795<br>Bar13, 14882.478632478627<br>Bar14, 16752.136752136747<br>Bar15, 15779.914529914526<br>Bar16, 21463.675213675207<br>Bar17, 13012.82051282051<br>Bar18, 25876.06837606837<br>Bar19, 31335.47008547008</p>
+<p><strong>ResNet50</strong></p>
+<table>
+<thead>
+<tr>
+<th># of GPUs</th>
+<th>默认</th>
+<th>WFBP</th>
+<th>MG-WFBP</th>
+<th>IMerge</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>390</td>
+<td>480</td>
+<td>480</td>
+<td>498</td>
+</tr>
+<tr>
+<td>8</td>
+<td>698</td>
+<td>907</td>
+<td>916</td>
+<td>970</td>
+</tr>
+<tr>
+<td>16</td>
+<td>834</td>
+<td>1659</td>
+<td>1777</td>
+<td>1895</td>
+</tr>
+<tr>
+<td>32</td>
+<td>1387</td>
+<td>2022</td>
+<td>2548</td>
+<td>3573</td>
+</tr>
+</tbody></table>
+<p>Bar0, 390.02267573696145<br>Bar1, 480.72562358276684<br>Bar2, 480.72562358276684<br>Bar3, 498.86621315192735<br>Bar4, 698.4126984126988<br>Bar5, 907.0294784580499<br>Bar6, 916.0997732426307<br>Bar7, 970.5215419501134<br>Bar8, 834.467120181406<br>Bar9, 1659.8639455782316<br>Bar10, 1777.777777777778<br>Bar11, 1895.6916099773243<br>Bar12, 1387.7551020408168<br>Bar13, 2022.6757369614513<br>Bar14, 2548.75283446712<br>Bar15, 3573.6961451247166</p>
 
       
     </div>
