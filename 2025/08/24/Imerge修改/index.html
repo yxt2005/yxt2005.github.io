@@ -17,16 +17,16 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>IMerge修改 | Yang.x.t&#39;s Web</title>
-  <meta name="description" content="Imerge修改（Introduction）1 introduction %PS vs. All-Reduce,(引入两种架构，介绍PS优势) 在分布式深度学习中，有两种最流行的系统架构：All-Reduce架构和参数服务器架构，分别采用去中心化和中心化的设计思想，具体定义了计算节点间如何通信、与谁通信等一系列完整的参数同步规则。 在All-Reduce 架构中，参数同步的过程直接在 worker">
+  <title>IMerge修改（Introduction） | Yang.x.t&#39;s Web</title>
+  <meta name="description" content="Imerge修改（Introduction）1 introduction %背景介绍 1近年来，基于深度神经网络（DNN）的深度学习发展迅速。然而，随着数据规模和网络模型复杂度的指数级增长，在单一设备上完成训练已变得极其耗时。例如，在 ImageNet 数据集上使用单张 Nvidia Tesla V100 GPU 训练 ResNet-50 模型可能需要超过两天的时间 \cite&#123;wang">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IMerge修改">
+<meta property="og:title" content="IMerge修改（Introduction）">
 <meta property="og:url" content="http://example.com/2025/08/24/Imerge%E4%BF%AE%E6%94%B9/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Imerge修改（Introduction）1 introduction %PS vs. All-Reduce,(引入两种架构，介绍PS优势) 在分布式深度学习中，有两种最流行的系统架构：All-Reduce架构和参数服务器架构，分别采用去中心化和中心化的设计思想，具体定义了计算节点间如何通信、与谁通信等一系列完整的参数同步规则。 在All-Reduce 架构中，参数同步的过程直接在 worker">
+<meta property="og:description" content="Imerge修改（Introduction）1 introduction %背景介绍 1近年来，基于深度神经网络（DNN）的深度学习发展迅速。然而，随着数据规模和网络模型复杂度的指数级增长，在单一设备上完成训练已变得极其耗时。例如，在 ImageNet 数据集上使用单张 Nvidia Tesla V100 GPU 训练 ResNet-50 模型可能需要超过两天的时间 \cite&#123;wang">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-08-24T14:30:00.000Z">
-<meta property="article:modified_time" content="2025-08-26T06:00:48.288Z">
+<meta property="article:modified_time" content="2025-08-28T19:04:13.651Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
@@ -311,7 +311,7 @@
                 <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
               </p>
               <p class="item-title">
-                <a href="/2025/08/24/Imerge%E4%BF%AE%E6%94%B9/" class="title">IMerge修改</a>
+                <a href="/2025/08/24/Imerge%E4%BF%AE%E6%94%B9/" class="title">IMerge修改（Introduction）</a>
               </p>
               <p class="item-date">
                 <time datetime="2025-08-24T14:30:00.000Z" itemprop="datePublished">2025-08-24</time>
@@ -354,7 +354,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      IMerge修改
+      IMerge修改（Introduction）
     </h1>
   
 
@@ -383,15 +383,27 @@
     <div class="article-entry marked-body" itemprop="articleBody">
       
         <h1 id="Imerge修改（Introduction）"><a href="#Imerge修改（Introduction）" class="headerlink" title="Imerge修改（Introduction）"></a>Imerge修改（Introduction）</h1><p>1 introduction</p>
+<p>%背景介绍</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">近年来，基于深度神经网络（DNN）的深度学习发展迅速。然而，随着数据规模和网络模型复杂度的指数级增长，在单一设备上完成训练已变得极其耗时。例如，在 ImageNet 数据集上使用单张 Nvidia Tesla V100 GPU 训练 ResNet-50 模型可能需要超过两天的时间 \cite&#123;wang2019benchmarking&#125;。因此，分布式深度学习的需求正稳步增长。</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">In recent years, deep learning based on deep neural networks (DNNs) has developed rapidly. However, with the exponential growth of data volume and network model complexity, training on a single device has become extremely time-consuming. For example, training the ResNet-50 model on the ImageNet dataset using a single Nvidia Tesla V100 GPU can take more than two days \cite&#123;wang2019benchmarking&#125;. Therefore, the demand for distributed deep learning has been steadily increasing.</span><br></pre></td></tr></table></figure>
+
+<p>修改：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">近年来，基于深度神经网络（DNN）的深度学习快速发展，并被广泛应用于多个领域 [1]–[6]。然而，随着数据规模和模型复杂度的指数级增长，在单一设备上完成训练变得极为耗时 [7]。因此，为加速 DNN 的训练，分布式深度学习的需求日益增长 [8]。</span><br><span class="line">在分布式训练策略中，数据并行已成为最主流的方法 [9-12]。其基本思想是将训练数据划分给多个计算节点，每个节点独立执行前向与反向传播，并计算局部梯度。随后，这些梯度需要通过参数同步在所有节点之间进行聚合，以更新全局模型参数 [13], [14]。然而，在大规模分布式训练中，梯度聚合往往带来密集的通信开销，成为限制系统可扩展性的关键瓶颈 [13], [15]。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">In recent years, deep learning based on deep neural networks (DNNs) has developed rapidly and has been widely applied in various domains~\cite&#123;krizhevsky2012imagenet,simonyan2014very,graves2013speech,amodei2016deep,deng2018deep,collobert2008unified&#125;. However, with the exponential growth of data volume and model complexity, training on a single device has become extremely time-consuming~\cite&#123;wang2019benchmarking&#125;. As a result, distributed deep learning has become increasingly important to accelerate the training of DNNs~\cite&#123;ben2019demystifying&#125;.</span><br><span class="line"></span><br><span class="line">Among distributed training strategies, data parallelism has emerged as the predominant approach~\cite&#123;shallue2019measuring,dean2012large,dekel2012optimal,meng2019convergence&#125;. The basic idea is to partition the training data across multiple workers, where each worker performs forward and backward propagation independently and computes local gradients. These gradients must then be aggregated through parameter synchronization across all workers to update the global model parameters~\cite&#123;shi2021exploiting,shi2018performance&#125;. However, in large-scale distributed training, gradient aggregation often introduces intensive communication overhead, which becomes a key bottleneck that limits scalability~\cite&#123;shi2021exploiting,duan2022mercury&#125;.</span><br><span class="line"></span><br><span class="line">Therefore, parameter synchronization has become a critical factor affecting the performance of distributed deep learning.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 <p>%PS vs. All-Reduce,(引入两种架构，介绍PS优势)</p>
 <p>在分布式深度学习中，有两种最流行的系统架构：All-Reduce架构和参数服务器架构，分别采用去中心化和中心化的设计思想，具体定义了计算节点间如何通信、与谁通信等一系列完整的参数同步规则。</p>
 <p>在All-Reduce 架构中，参数同步的过程直接在 worker 节点内部执行，通过去中心化的点对点通信实现全局梯度聚合。Allreduce 有多种实现方式，其中最为著名的是 ring allreduce，它通过将张量分成小消息并以流水线方式同时交换这些消息来实现带宽优化。然而，它主要适用于传输少量的大消息，事实上对于一个分布式训练任务而言，传输大量的小消息是更为普遍的现象。通信次数和启动时延随集群规模线性增长。此外 ring 算法的链式通信结构也使其容灾能力较差，限制其扩展性。</p>
 <p>相比之下，PS 架构采用集中式参数管理方式，在容错性、灵活性以及异构环境适配方面展现出独特优势。PS在逻辑上是一个中央服务器，它聚合来自worker的梯度，更新模型参数，并将最新的模型发回给worker，为系统实现提供了一个简单而灵活的框架。</p>
 <hr>
-<p>修改版本（适当精简内容）：</p>
+<p>修改版本（适当精简内容，与前面背景描述衔接）：</p>
 <p>%PS与All-Reduce的对比</p>
-<p>在分布式深度学习中，参数同步是影响训练性能的核心环节。目前最常见的两类系统架构是 <strong>参数服务器（Parameter Server, PS）</strong> 和 <strong>All-Reduce</strong>。All-Reduce 架构通过去中心化的点对点通信实现全局梯度聚合，能够高效利用带宽。然而，它更适合少量大消息的传输，而在实际分布式训练中，大量小消息的通信更为常见，因而其优势受限。同时，其通信次数与启动延迟随集群规模线性增长，其链式结构在容错性上也较为薄弱，从而进一步限制了系统的可扩展性。相比之下，PS 架构采用集中式参数管理方式，在容错性、灵活性以及异构环境适配方面展现出独特优势。</p>
-<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In distributed deep learning, parameter synchronization is a critical factor that affects training performance. The two most common system architectures are the <span class="keyword">\textbf</span>&#123;Parameter Server (PS)&#125; and <span class="keyword">\textbf</span>&#123;All-Reduce&#125;. The All-Reduce architecture performs global gradient aggregation through decentralized peer-to-peer communication, which enables efficient bandwidth utilization. However, it is more suitable for transmitting a small number of large messages, whereas in practical distributed training, the communication of numerous small messages is more common, which limits its advantages. Meanwhile, its communication rounds and startup latency grow linearly with cluster size, and its chain-based structure exhibits weak fault tolerance, further constraining system scalability. In contrast, the PS architecture adopts a centralized parameter management approach, demonstrating unique advantages in fault tolerance, flexibility, and adaptability to heterogeneous environments.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>因此，在分布式深度学习中，参数同步是影响训练性能的核心环节。目前最常见的两类系统架构是 <strong>参数服务器（Parameter Server, PS）</strong> 和 <strong>All-Reduce</strong>。All-Reduce 架构通过去中心化的点对点通信实现全局梯度聚合，能够高效利用带宽。然而，它更适合少量大消息的传输，而在实际分布式训练中，大量小消息的通信更为常见，因而其优势受限。同时，其通信次数与启动延迟随集群规模线性增长，其链式结构在容错性上也较为薄弱，从而进一步限制了系统的可扩展性。相比之下，PS 架构采用集中式参数管理方式，在容错性、灵活性以及异构环境适配方面展现出独特优势。</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In distributed deep learning, parameter synchronization is a critical factor that affects training performance. The two most common system architectures are the <span class="keyword">\textbf</span>&#123;Parameter Server (PS)&#125; and <span class="keyword">\textbf</span>&#123;All-Reduce&#125;. The All-Reduce architecture performs global gradient aggregation through decentralized peer-to-peer communication, which enables efficient bandwidth utilization. However, it is more suitable for transmitting a small number of large messages, whereas in practical distributed training, the communication of numerous small messages is more common, which limits its advantages. Meanwhile, its communication rounds and startup latency grow linearly with cluster size, and its chain-based structure exhibits weak fault tolerance, further constraining system scalability. In contrast, the PS architecture<span class="keyword">\cite</span>&#123;dean2012large, smola2010architecture,li2013parameter,li2014communication &#125; adopts a centralized parameter management approach, demonstrating unique advantages in fault tolerance, flexibility, and adaptability to heterogeneous environments.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <hr>
 <p>%PS的问题</p>
@@ -430,7 +442,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2025/08/24/Imerge%E4%BF%AE%E6%94%B9/" title="IMerge修改" target="_blank" rel="external">http://example.com/2025/08/24/Imerge修改/</a>
+      <a href="http://example.com/2025/08/24/Imerge%E4%BF%AE%E6%94%B9/" title="IMerge修改（Introduction）" target="_blank" rel="external">http://example.com/2025/08/24/Imerge修改/</a>
     </li>
     
     <li class="post-copyright-license">
