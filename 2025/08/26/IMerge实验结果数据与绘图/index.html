@@ -26,7 +26,7 @@
 <meta property="og:description" content="一、不同融合方案的吞吐量对比由于原始数据缺失，只剩下论文里的柱状图，可以使用 WebPlotDigitizer 提取柱状图数据。 ResNet18 吞吐量    # of GPUs 静态阈值融合 自适应融合（基于AllReduce） 自适应融合（基于PS模型）    4 935 952 970   8 1833 1534 1886   16 3544 1992 3649   32 5501 294">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-08-26T05:26:14.000Z">
-<meta property="article:modified_time" content="2025-08-28T13:09:35.107Z">
+<meta property="article:modified_time" content="2025-08-28T16:07:01.911Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
@@ -568,7 +568,6 @@
 <td>6650</td>
 </tr>
 </tbody></table>
-<p>Bar0, 806.5217391304353<br>Bar1, 928.2608695652178<br>Bar2, 897.8260869565225<br>Bar3, 958.6956521739131<br>Bar4, 989.1304347826084<br>Bar5, 1460.8695652173915<br>Bar6, 1810.8695652173922<br>Bar7, 1704.3478260869565<br>Bar8, 1871.7391304347827<br>Bar9, 1993.478260869565<br>Bar10, 2206.521739130435<br>Bar11, 3226.0869565217395<br>Bar12, 2510.8695652173915<br>Bar13, 3667.391304347826<br>Bar14, 3941.3043478260875<br>Bar15, 3606.521739130435<br>Bar16, 4854.347826086957<br>Bar17, 2906.5217391304354<br>Bar18, 6239.13043478261<br>Bar19, 6650.000000000001</p>
 <p><strong>Vgg16 吞吐量</strong></p>
 <table>
 <thead>
@@ -614,7 +613,6 @@
 <td>8409</td>
 </tr>
 </tbody></table>
-<p>Bar0, 848.3606557377059<br>Bar1, 959.0163934426239<br>Bar2, 885.245901639346<br>Bar3, 995.9016393442639<br>Bar4, 1143.44262295082<br>Bar5, 1420.081967213115<br>Bar6, 1918.032786885247<br>Bar7, 1438.524590163936<br>Bar8, 1991.8032786885249<br>Bar9, 2157.786885245902<br>Bar10, 1696.72131147541<br>Bar11, 3282.786885245902<br>Bar12, 1991.8032786885249<br>Bar13, 3836.065573770493<br>Bar14, 4297.131147540984<br>Bar15, 2747.9508196721313<br>Bar16, 4370.901639344263<br>Bar17, 2323.7704918032796<br>Bar18, 6049.180327868853<br>Bar19, 8409.836065573772</p>
 <p><strong>AlexNet</strong></p>
 <table>
 <thead>
@@ -660,7 +658,6 @@
 <td>31335</td>
 </tr>
 </tbody></table>
-<p>Bar0, 3141.0256410256393<br>Bar1, 3739.316239316238<br>Bar2, 3365.3846153846134<br>Bar3, 4487.1794871794855<br>Bar4, 4561.96581196581<br>Bar5, 5833.33333333333<br>Bar6, 7329.0598290598255<br>Bar7, 6506.410256410253<br>Bar8, 8076.923076923073<br>Bar9, 8749.999999999996<br>Bar10, 9722.222222222217<br>Bar11, 13685.897435897434<br>Bar12, 10544.871794871795<br>Bar13, 14882.478632478627<br>Bar14, 16752.136752136747<br>Bar15, 15779.914529914526<br>Bar16, 21463.675213675207<br>Bar17, 13012.82051282051<br>Bar18, 25876.06837606837<br>Bar19, 31335.47008547008</p>
 <p><strong>ResNet50</strong></p>
 <table>
 <thead>
@@ -701,8 +698,8 @@
 <td>3573</td>
 </tr>
 </tbody></table>
-<p>Bar0, 390.02267573696145<br>Bar1, 480.72562358276684<br>Bar2, 480.72562358276684<br>Bar3, 498.86621315192735<br>Bar4, 698.4126984126988<br>Bar5, 907.0294784580499<br>Bar6, 916.0997732426307<br>Bar7, 970.5215419501134<br>Bar8, 834.467120181406<br>Bar9, 1659.8639455782316<br>Bar10, 1777.777777777778<br>Bar11, 1895.6916099773243<br>Bar12, 1387.7551020408168<br>Bar13, 2022.6757369614513<br>Bar14, 2548.75283446712<br>Bar15, 3573.6961451247166</p>
-<h2 id="三、不同调度策略下的加速比"><a href="#三、不同调度策略下的加速比" class="headerlink" title="三、不同调度策略下的加速比"></a>三、不同调度策略下的加速比</h2><p>ResNet18</p>
+<h2 id="三、不同调度策略下的加速比"><a href="#三、不同调度策略下的加速比" class="headerlink" title="三、不同调度策略下的加速比"></a>三、不同调度策略下的加速比</h2><p>提醒：此处XY轴属于对数刻度，在使用WebPlotDigitizer时，标定刻度线时选择Log Scale</p>
+<p>ResNet18</p>
 <table>
 <thead>
 <tr>
@@ -717,44 +714,186 @@
 </thead>
 <tbody><tr>
 <td>4</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>4</td>
+<td>2.86</td>
+<td>3.28</td>
+<td>3.17</td>
+<td>3.51</td>
+<td>3.58</td>
 </tr>
 <tr>
 <td>8</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>8</td>
+<td>5.12</td>
+<td>6.49</td>
+<td>6.11</td>
+<td>6.72</td>
+<td>7.19</td>
 </tr>
 <tr>
 <td>16</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>16</td>
+<td>7.89</td>
+<td>11.61</td>
+<td>8.80</td>
+<td>13.39</td>
+<td>14.04</td>
 </tr>
 <tr>
 <td>32</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>32</td>
+<td>13.1</td>
+<td>17.42</td>
+<td>10.40</td>
+<td>22.39</td>
+<td>24.29</td>
 </tr>
 </tbody></table>
 <p>Vgg16</p>
+<table>
+<thead>
+<tr>
+<th># of GPUs</th>
+<th>Linear</th>
+<th>Default</th>
+<th>WFBP</th>
+<th>Priority-based</th>
+<th>MG-WFBP</th>
+<th>IMerge</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>4</td>
+<td>2.71</td>
+<td>3.21</td>
+<td>2.95</td>
+<td>3.43</td>
+<td>3.69</td>
+</tr>
+<tr>
+<td>8</td>
+<td>8</td>
+<td>4.75</td>
+<td>6.28</td>
+<td>4.97</td>
+<td>6.71</td>
+<td>7.34</td>
+</tr>
+<tr>
+<td>16</td>
+<td>16</td>
+<td>5.86</td>
+<td>11.00</td>
+<td>6.70</td>
+<td>12.92</td>
+<td>14.44</td>
+</tr>
+<tr>
+<td>32</td>
+<td>32</td>
+<td>9.14</td>
+<td>14.83</td>
+<td>7.73</td>
+<td>20.59</td>
+<td>28.59</td>
+</tr>
+</tbody></table>
 <p>AlexNet</p>
+<table>
+<thead>
+<tr>
+<th># of GPUs</th>
+<th>Linear</th>
+<th>Default</th>
+<th>WFBP</th>
+<th>Priority-based</th>
+<th>MG-WFBP</th>
+<th>IMerge</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>4</td>
+<td>1.61</td>
+<td>1.97</td>
+<td>1.75</td>
+<td>2.31</td>
+<td>2.38</td>
+</tr>
+<tr>
+<td>8</td>
+<td>8</td>
+<td>3.07</td>
+<td>3.89</td>
+<td>3.33</td>
+<td>4.26</td>
+<td>4.52</td>
+</tr>
+<tr>
+<td>16</td>
+<td>16</td>
+<td>5.07</td>
+<td>7.09</td>
+<td>5.50</td>
+<td>7.81</td>
+<td>8.80</td>
+</tr>
+<tr>
+<td>32</td>
+<td>32</td>
+<td>8.20</td>
+<td>11.2</td>
+<td>6.80</td>
+<td>13.50</td>
+<td>16.74</td>
+</tr>
+</tbody></table>
 <p>ResNet50</p>
+<table>
+<thead>
+<tr>
+<th># of GPUs</th>
+<th>Linear</th>
+<th>Default</th>
+<th>WFBP</th>
+<th>MG-WFBP</th>
+<th>IMerge</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>4</td>
+<td>4</td>
+<td>2.77</td>
+<td>3.33</td>
+<td>3.50</td>
+<td>3.60</td>
+</tr>
+<tr>
+<td>8</td>
+<td>8</td>
+<td>5.15</td>
+<td>6.56</td>
+<td>6.77</td>
+<td>7.17</td>
+</tr>
+<tr>
+<td>16</td>
+<td>16</td>
+<td>6.16</td>
+<td>12.34</td>
+<td>13.24</td>
+<td>14.11</td>
+</tr>
+<tr>
+<td>32</td>
+<td>32</td>
+<td>10.34</td>
+<td>15.06</td>
+<td>19.18</td>
+<td>26.60</td>
+</tr>
+</tbody></table>
 
       
     </div>
