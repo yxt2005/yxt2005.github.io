@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>IMerge修改（Design） | Yang.x.t&#39;s Web</title>
+  <meta name="description" content="原文： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061% overview为了解决基于参数服务器（PS）的分布式深度学习中的通信瓶颈和带宽争用问题，我们提出了 IMerge ——一种交错通信与合并梯度的无等待反向传播算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IMerge修改（Design）">
+<meta property="og:url" content="http://example.com/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="原文： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061% overview为了解决基于参数服务器（PS）的分布式深度学习中的通信瓶颈和带宽争用问题，我们提出了 IMerge ——一种交错通信与合并梯度的无等待反向传播算法">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-08-29T06:48:13.000Z">
+<meta property="article:modified_time" content="2025-08-29T14:23:21.060Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/yxt2005" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Yang.x.t.</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">XDUer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> xi&#39;an, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%EF%BC%88Hexo%EF%BC%89/">博客搭建（Hexo）</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">学习笔记 - 论文阅读</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/">工具教程</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0/">每日学习</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" rel="tag">文献管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag">论文阅读</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Hexo/" style="font-size: 14px;">Hexo</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 14px;">博客搭建</a> <a href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" style="font-size: 13px;">文献管理</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 13px;">论文阅读</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a><span class="archive-list-count">12</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/" class="title">IMerge修改（Design）</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-29T06:48:13.000Z" itemprop="datePublished">2025-08-29</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0/">每日学习</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/28/ChatGPT-Plus%E5%8D%87%E7%BA%A7/" class="title">ChatGPT Plus升级</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-28T13:17:59.000Z" itemprop="datePublished">2025-08-28</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/">工具教程</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/26/Origin%E6%95%99%E7%A8%8B/" class="title">Origin教程</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-26T05:44:59.000Z" itemprop="datePublished">2025-08-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/26/IMerge%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E4%B8%8E%E7%BB%98%E5%9B%BE/" class="title">IMerge实验结果数据与绘图</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-26T05:26:14.000Z" itemprop="datePublished">2025-08-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/24/Imerge%E4%BF%AE%E6%94%B9/" class="title">IMerge修改（Introduction）</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-24T14:30:00.000Z" itemprop="datePublished">2025-08-24</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-IMerge修改（Design）" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      IMerge修改（Design）
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/" class="article-date">
+	  <time datetime="2025-08-29T06:48:13.000Z" itemprop="datePublished">2025-08-29</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+  </span>
+
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>原文：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">% overview</span><br><span class="line">为了解决基于参数服务器（PS）的分布式深度学习中的通信瓶颈和带宽争用问题，我们提出了 IMerge ——一种交错通信与合并梯度的无等待反向传播算法。IMerge 融合了两种互补的策略：</span><br><span class="line">(1) 梯度融合策略：通过将相邻层的小梯度聚合在一起，减少通信启动延迟；</span><br><span class="line">(2) 交错通信调度策略：在跨迭代和单次迭代内重叠计算与通信，从而缓解网络拥塞并隐藏通信开销。</span><br><span class="line"></span><br><span class="line">核心思想是充分利用不同层梯度传输与计算之间的独立性，以实现两者更好的重叠。通过动态确定哪些层需要合并以及何时启动通信，IMerge 能够获得比传统 WFBP 或 PBPP 方法更低的通信-计算比。</span><br><span class="line"></span><br><span class="line">% 梯度融合策略设计</span><br><span class="line">梯度融合策略</span><br><span class="line"></span><br><span class="line">深度神经网络（DNN）由多层组成，各层的计算与通信时间分布高度不均衡。在 WFBP 中，每一层的梯度在计算完成后立即发送。但这种逐层通信方式效率较低，因为并非所有梯度通信时间都能完全隐藏在前面层的计算时间之中。</span><br><span class="line"></span><br><span class="line">IMerge 提出了一种 梯度融合策略 来改变通信的粒度。梯度通信时间由两部分组成：一是与梯度大小成正比的传输时间，二是与消息大小无关的固定启动延迟。因此，将若干连续层的梯度合并为一次通信可以减少启动次数，从而获得比逐层发送更好的整体性能。</span><br><span class="line"></span><br><span class="line">通过一个五层 DNN 的例子可以看出：如果第 5 层的通信时间完全可以被第 4 层的反向计算隐藏，则无需融合；但如果第 4 层通信时间超过了第 3 层的计算时间，将第 4 层与第 3 层的梯度合并后发送反而能更快完成通信。相反，第 2 层和第 1 层若合并，会导致完成时间更晚，这是不利的。由此可见，并非所有融合操作都有益。</span><br><span class="line"></span><br><span class="line">关键问题在于如何确定哪些层需要融合。IMerge 通过构建层级计算与通信的时间线来解决这一问题。由于各层的计算时间在迭代中相对稳定，可以通过预训练得到；而通信时间则必须依赖通信模型进行预测，因为在应用融合后时间线会发生动态变化。</span><br><span class="line"></span><br><span class="line">通过对比融合前后通信完成时间，可以得到通用的融合条件。其本质是：只有当融合带来的总通信节省量大于因推迟通信引入的等待时间时，融合才是有益的。进一步推导表明，当额外等待时间不超过启动延迟时，融合才有价值。这与直觉一致：融合的主要收益就是减少启动开销。</span><br><span class="line"></span><br><span class="line">IMerge 针对 PS 架构提出了一个通信模型，考虑了启动延迟和多工作节点同时向 PS 推送数据时的带宽争用。为克服理论模型高估并发度的问题，引入了一个并发概率因子 </span><br><span class="line">𝑃</span><br><span class="line">P，用来估计任意时刻实际参与通信的工作节点数。通过运行时的通信轨迹估计该值，可以得到一个更符合实际的 PS 感知通信模型，并用于决定融合策略。</span><br><span class="line"></span><br><span class="line">在此基础上，IMerge 设计了一个贪心算法：自底向上扫描各层，逐层判断是否应当与前一层合并。只有当融合节省的时间超过等待时间时，才进行合并。这样形成的分组能确保每次融合都带来净收益，从而提升整体通信效率。</span><br><span class="line"></span><br><span class="line">交错通信调度</span><br><span class="line"></span><br><span class="line">在参数服务器架构中，多对一的通信模式容易造成严重的网络拥塞，进而限制训练吞吐量。为缓解带宽争用，IMerge 进一步提出了 交错通信调度策略。其核心思想是：在采用梯度融合的基础上，对不同梯度组的通信进行时间错开，减少大规模并发传输。</span><br><span class="line"></span><br><span class="line">这种交错机制分为两部分：</span><br><span class="line"></span><br><span class="line">跨迭代交错：将不同参数组的同步时机错开到不同迭代，从而降低每个迭代的通信量。</span><br><span class="line"></span><br><span class="line">单迭代内交错：在一次迭代内部，将通信时间窗口划分给不同工作节点，避免所有节点同时通信。</span><br><span class="line"></span><br><span class="line">在跨迭代交错中，参数组会在多个迭代中分批通信，而非每次迭代都同步。这虽然减少了通信频率，但可能导致本地模型间的差异增大。为缓解这一问题，IMerge 采用 弹性平均 SGD (EASGD)，在更新规则中加入对全局模型的约束，保持局部探索与全局一致性的平衡。</span><br><span class="line"></span><br><span class="line">在单迭代内交错中，每个融合梯度组的通信时间被划分为多个时隙，分别分配给不同工作节点。这样保证了任一时刻只有少数节点访问 PS，从而显著降低带宽并发度。</span><br><span class="line"></span><br><span class="line">实现方法</span><br><span class="line"></span><br><span class="line">合并通信的前提是计算与通信能够并行进行。但主流深度学习框架中，计算与通信通常是紧耦合顺序执行的。为此，IMerge 对训练流水线进行了重新设计，使其分解为可独立控制的模块。</span><br><span class="line"></span><br><span class="line">在 PyTorch 中，IMerge 借助 hooks 机制实现：</span><br><span class="line"></span><br><span class="line">backward hook：在每层反向计算完成后触发，用于决定是否立即发送梯度；</span><br><span class="line"></span><br><span class="line">forward hook：在前向计算前触发，用于确保该层的参数已经完成更新。</span><br><span class="line"></span><br><span class="line">当选择融合时，参数被临时存入缓冲区，直到整个融合组的梯度都准备好才发送。为避免运行时开销，每个融合组在训练前就分配好缓冲区。通信由独立线程负责，计算线程则立即继续后续计算，保证不被通信阻塞。</span><br><span class="line"></span><br><span class="line">为了让同一融合组内的所有参数共享一次通信结果，IMerge 利用 Python 的 Future 对象机制：当通信线程完成一次 push-pull，同一融合组内的所有参数都能同步获得结果，从而避免冗余开销。</span><br><span class="line"></span><br><span class="line">最终，IMerge 的交错通信由两部分构成：</span><br><span class="line"></span><br><span class="line">跨迭代交错：在不同迭代中错开参数组同步，降低单次迭代通信量；</span><br><span class="line"></span><br><span class="line">单迭代内交错：在同一迭代中划分通信时间槽，减少工作节点的并发。</span><br><span class="line"></span><br><span class="line">这两者结合，使得通信负载在时间维度上被均匀分布，从而显著降低带宽峰值，提高分布式训练的效率。</span><br></pre></td></tr></table></figure>
+
+
+
+<p>一、概述修改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">为克服参数服务器（PS）架构下的通信瓶颈与带宽争用，本文提出 IMerge，即一种交错通信与合并梯度的无等待反向传播（WFBP）算法。IMerge 融合了两种互补的策略：</span><br><span class="line">1）梯度融合策略：通过改变参数的传输粒度，将相邻层的小梯度聚合在一起传输，以降低启动时延，从而减小通信开销；</span><br><span class="line">2）交错通信调度策略：在梯度融合策略的基础之上，在跨迭代（inter-iteration）与单迭代内（intra-iteration）对这些融合后的梯度组进行错峰传输，以减少并发的大流量传输并缓解 PS 侧的网络拥塞。</span><br><span class="line"></span><br><span class="line">IMerge 的核心思想是利用层级计算与梯度传输之间的独立性，动态决定哪些层需要融合以及何时触发组内通信，从而相较于传统的逐层通信调度方法显著降低通信开销，并在 PS 架构中获得更高吞吐量</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;Overview&#125;</span><br><span class="line">To overcome the communication bottlenecks and bandwidth contention in parameter server (PS)-based distributed deep learning, we propose \textbf&#123;IMerge&#125;, an interleaved-communication and merged-gradient wait-free backpropagation algorithm. IMerge integrates two complementary strategies:  </span><br><span class="line"></span><br><span class="line">1) \textbf&#123;Gradient fusion strategy&#125;: by changing the granularity of parameter transmission, small gradients from adjacent layers are aggregated and transmitted together, which reduces startup latency and thereby lowers communication overhead;  </span><br><span class="line"></span><br><span class="line">2) \textbf&#123;Interleaved communication scheduling strategy&#125;: built on top of gradient fusion, the merged-gradient groups are staggered across iterations (inter-iteration) and within each iteration (intra-iteration), which reduces concurrent large-volume transmissions and alleviates network congestion at the PS side.  </span><br><span class="line"></span><br><span class="line">The key idea of IMerge is to exploit the independence between layer-wise computations and gradient transmissions, and to dynamically determine which layers should be fused and when the group communication should be triggered. Compared with conventional layer-wise scheduling methods, IMerge significantly reduces communication overhead and achieves higher throughput in PS-based systems.</span><br></pre></td></tr></table></figure>
+
+<p>二、梯度融合策略设计</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">% 梯度融合策略设计</span><br><span class="line">梯度融合策略</span><br><span class="line"></span><br><span class="line">深度神经网络（DNN）由多层组成，不同层参数的计算和通信在很大程度上是相互独立的。例如，在反向传播过程中，某一层梯度的通信只依赖于该层反向计算的完成，而不依赖于前一层的计算。因此，一种直观的调度策略是：每完成一层反向计算，就立即传输该层产生的梯度，即无等待反向传播算法（wait-free backpropagation, WFBP）[]。然而，由于不同层的计算与通信时间分布高度不均衡，许多梯度通信无法完全隐藏在前面层的计算中，加之频繁的小消息传输会导致启动时延占主导，使得这种逐层通信方式效率较低。</span><br><span class="line">一种更优的做法是改变参数传输的粒度。梯度通信时间通常包括两部分：一是与梯度大小成正比的传输时间，二是与消息大小无关的固定启动延迟。由于存在启动延迟，传输少量数据既不能充分利用带宽，还会引入密集的通信开销。因此，将若干连续层的梯度合并为一次通信可以减少启动次数，相比逐层发送能获得更好的整体性能。Shi 等人 [15] 提出了一种融合相邻层通信的无等待反向传播方法（MG-WFBP），将部分相邻层梯度合并发送。这种方法在减少启动时延的同时，也能一定程度上实现计算与通信的重叠。然而，其所基于的通信模型并未准确刻画 PS 架构下的多对一通信特征，所推导的融合条件在参数服务器系统中并不能显著提升通信效率。</span><br><span class="line">因此，IMerge 提出一种契合 PS 架构通信模式的梯度融合策略。通过建立一个更为准确的参数服务器通信模型，IMerge 能够在此基础上给出合理的融合条件，从而实现更高效、更可靠的梯度融合。 </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;Gradient Fusion Strategy&#125;</span><br><span class="line">Deep neural networks (DNNs) are composed of multiple layers, and the computations and communications associated with different layers are largely independent. For example, during backpropagation, the communication of a layer’s gradients only depends on the completion of its own backward computation, rather than on the computation of other layers. A straightforward scheduling strategy is therefore to transmit the gradients of each layer immediately once they are computed, which is known as the wait-free backpropagation (WFBP) algorithm~\cite&#123;&#125;. However, due to the imbalance between computation and communication time across layers, many gradient transmissions cannot be fully hidden under preceding computations. Moreover, frequent small messages incur non-negligible startup latency, making such a layer-wise communication strategy inefficient.  </span><br><span class="line"></span><br><span class="line">A more effective approach is to change the granularity of parameter transmission. The communication time of gradients typically consists of two parts: (i) the transmission time proportional to the gradient size, and (ii) a fixed startup latency independent of the message size. Because of the startup cost, transmitting small amounts of data neither fully utilizes network bandwidth nor avoids intensive communication overhead. Therefore, merging gradients from several consecutive layers into a single transmission reduces the number of startups and achieves better overall performance than sending each layer’s gradients separately. Shi et al.~\cite&#123;shi2019mg&#125; proposed MG-WFBP, which fuses the gradients of adjacent layers in WFBP. This method reduces the startup overhead while still overlapping communication with computation to some extent. However, its communication model does not accurately capture the many-to-one communication characteristics of PS-based systems, and thus the derived fusion condition is not well suited for improving communication efficiency under the PS architecture.  </span><br><span class="line"></span><br><span class="line">To address this limitation, IMerge proposes a gradient fusion strategy tailored to the PS communication paradigm. By constructing a more accurate PS-specific communication model, IMerge provides reliable fusion conditions and enables more effective gradient fusion, thereby improving communication efficiency in PS-based distributed training.  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">通过一个五层 DNN 的例子可以看出：如果第 5 层的通信时间完全可以被第 4 层的反向计算隐藏，则无需融合；但如果第 4 层通信时间超过了第 3 层的计算时间，将第 4 层与第 3 层的梯度合并后发送反而能更快完成通信。相反，第 2 层和第 1 层若合并，会导致完成时间更晚，这是不利的。由此可见，并非所有融合操作都有益。</span><br><span class="line"></span><br><span class="line">关键问题在于如何确定哪些层需要融合。IMerge 通过构建层级计算与通信的时间线来解决这一问题。由于各层的计算时间在迭代中相对稳定，可以通过预训练得到；而通信时间则必须依赖通信模型进行预测，因为在应用融合后时间线会发生动态变化。</span><br><span class="line"></span><br><span class="line">通过对比融合前后通信完成时间，可以得到通用的融合条件。其本质是：只有当融合带来的总通信节省量大于因推迟通信引入的等待时间时，融合才是有益的。进一步推导表明，当额外等待时间不超过启动延迟时，融合才有价值。这与直觉一致：融合的主要收益就是减少启动开销。</span><br><span class="line"></span><br><span class="line">IMerge 针对 PS 架构提出了一个通信模型，考虑了启动延迟和多工作节点同时向 PS 推送数据时的带宽争用。为克服理论模型高估并发度的问题，引入了一个并发概率因子 </span><br><span class="line">𝑃</span><br><span class="line">P，用来估计任意时刻实际参与通信的工作节点数。通过运行时的通信轨迹估计该值，可以得到一个更符合实际的 PS 感知通信模型，并用于决定融合策略。</span><br><span class="line"></span><br><span class="line">在此基础上，IMerge 设计了一个贪心算法：自底向上扫描各层，逐层判断是否应当与前一层合并。只有当融合节省的时间超过等待时间时，才进行合并。这样形成的分组能确保每次融合都带来净收益，从而提升整体通信效率。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line">图~\ref&#123;fig:Merged gradient communication&#125; 以一个 5 层 DNN 为例说明了梯度融合的效果。对于第 5 层，其通信时间 $t_p^&#123;(5)&#125;$ 可以完全隐藏在第 4 层的反向计算时间 $t_b^&#123;(4)&#125;$ 之后，因此无需融合。而对于第 4 层，其通信时间 $t_p^&#123;(4)&#125;$ 大于 $t_b^&#123;(3)&#125;$。如果将第 4 层与第 3 层的梯度融合后一起发送（见图~\ref&#123;fig:Merged gradient communication&#125;, 第 3 行），其通信完成时间要早于单独发送的情况（第 2 行）。相反，对于第 2 层和第 1 层，融合会导致完成时间晚于分开发送，这是不利的。  </span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[scale=0.7]&#123;figures/Merged gradient communication.png&#125;</span><br><span class="line">	\caption&#123;五层 DNN 上的融合通信示例。第 2 行：不采用融合的通信；第 3 行：融合通信。&#125;</span><br><span class="line">	\label&#123;fig:Merged gradient communication&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">上述例子表明，并非所有融合操作都是有益的。一个关键问题是：如何确定哪些层需要进行融合，以保证通信与计算的最优重叠。这依赖于对训练过程中每一层参数计算与通信timeline 的准确建模。为了便于表述，我们在表~\ref&#123;tab:timeline&#125;中总结了常用的数学符号。由于每层的计算时间 $t_b^&#123;(l)&#125;$ 在迭代中相对稳定，可以通过预训练进行分析；而通信时间 $t_c^&#123;(l)&#125;$ 则需要依赖精确的通信模型进行预测，因为对“融合层”的判断是一个迭代式的寻找过程，每当找到某一层参数需要融合发送时，timeline 也会随之更新，融合后参数的通信时间只能依据通信模型来推测。</span><br><span class="line"></span><br><span class="line">\begin&#123;table&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\caption&#123;计算与通信时间线的表示。&#125;</span><br><span class="line">	\label&#123;tab:timeline&#125;</span><br><span class="line">	\renewcommand&#123;\arraystretch&#125;&#123;1.2&#125;</span><br><span class="line">	\begin&#123;tabularx&#125;&#123;\linewidth&#125;&#123;cX&#125;</span><br><span class="line">		\hline</span><br><span class="line">		\textbf&#123;符号&#125; &amp; \textbf&#123;含义&#125; \\ \hline</span><br><span class="line">		\( t_b(k) \)    &amp; 第 \(k\) 层的反向计算时间。 \\  </span><br><span class="line">		\( \tau_b(k) \) &amp; 第 \(k\) 层反向计算的开始时间。 \\  </span><br><span class="line">		\( T_b(k) \)    &amp; 第 \(k\) 层反向计算的完成时间。 \\  </span><br><span class="line">		\( t_p(k) \)    &amp; 第 \(k\) 层梯度的通信时间。 \\  </span><br><span class="line">		\( \tau_p(k) \) &amp; 第 \(k\) 层通信的开始时间。 \\  </span><br><span class="line">		\( T_p(k) \)    &amp; 第 \(k\) 层通信的完成时间。 \\  </span><br><span class="line">		\( S(k) \)      &amp; 第 \(k\) 层的参数大小。 \\  </span><br><span class="line">		\( t_w \)       &amp; 将梯度写入缓冲区的时间。 \\ \hline</span><br><span class="line">	\end&#123;tabularx&#125;</span><br><span class="line">\end&#123;table&#125;</span><br><span class="line"></span><br><span class="line">合适的融合条件对于梯度融合的有效性至关重要。在 MG-WFBP中，融合条件是针对某个特定层（如第 3 层）推导的。而本文将其推广到任意层 $k$，从而给出更一般化的融合条件。</span><br><span class="line"></span><br><span class="line">基于该时间线模型，IMerge 采用贪心策略来决定是否融合相邻层的梯度。具体来说，对于每一层，我们迭代评估融合对完成时间的潜在影响。关键原则是：在当前层之前，总体的通信完成时间应保持最优。这种逐层的决策过程使 IMerge 能够自适应地确定最有利的融合机会及其对应的通信调度。  </span><br><span class="line"></span><br><span class="line">% 融合条件推导</span><br><span class="line">为了判断将第 $k$ 层与其前一层 $k-1$ 层进行融合是否有益，我们比较两种情况下的通信完成时间：融合与不融合。设 $T_p(k-1)$ 为未融合时第 $k-1$ 层通信的完成时间：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	T_p(k-1) = \max\&#123; \tau_b(k-1) + t_b(k-1) + t_w,\ \tau_p(k) + t_p(k) \&#125; + t_p(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">若进行融合，设 $t_p&#x27;(k-1)$ 为融合后的通信时间，则新的完成时间为：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	T_p&#x27;(k-1) = \max\&#123; \tau_b(k-1) + t_b(k-1) + t_w,\ \tau_p(k) \&#125; + t_p&#x27;(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">当且仅当整体通信完成时间减少时，融合才是有益的，即：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = T_p(k-1) - T_p&#x27;(k-1) &gt; 0</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">根据 $\tau_b(k-1) + t_b(k-1) + t_w$ 与 $\tau_p(k)$ 之间的关系，可以得到三种情况：  </span><br><span class="line"></span><br><span class="line">\textbf&#123;情况 1:&#125; $\tau_b(k-1) + t_b(k-1) + t_w &lt; \tau_p(k) &lt; \tau_p(k) + t_p(k)$</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = t_p(k) + t_p(k-1) - t_p&#x27;(k-1) &gt; 0</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">此时融合总是有益的。  </span><br><span class="line"></span><br><span class="line">\textbf&#123;情况 2:&#125; $\tau_p(k)&lt;\tau_p(k) + t_p(k) &lt; \tau_b(k-1) + t_b(k-1) + t_w$</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = t_p(k-1) - t_p&#x27;(k-1) &lt; 0</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">在该情况下，融合始终无益。  </span><br><span class="line"></span><br><span class="line">\textbf&#123;情况 3:&#125; $\tau_p(k) &lt; \tau_b(k-1) + t_b(k-1) + t_w &lt; \tau_p(k) + t_p(k)$</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = \tau_p(k) + t_p(k) + t_p(k-1) - \tau_b(k-1) - t_b(k-1) - t_w - t_p&#x27;(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">融合有益的条件为：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\tau_b(k-1) + t_b(k-1) + t_w - \tau_p(k) &lt; t_p(k) + t_p(k-1) - t_p&#x27;(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">综合上述三种情况，得到一般化的融合条件：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\tau_b(k-1) + t_b(k-1) + t_w - \tau_p(k) &lt; t_p(k) + t_p(k-1) - t_p&#x27;(k-1)</span><br><span class="line">	\label&#123;eq:fusion_condition&#125;</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[scale=0.45]&#123;figures/Fusion_condition_example.png&#125;</span><br><span class="line">	\caption&#123;融合条件的示意图。$t_&#123;\text&#123;wait&#125;&#125;$ 表示当第 $k$ 层延迟以与第 $k-1$ 层融合时引入的等待时间，而 $t_&#123;\text&#123;reduce&#125;&#125;$ 表示融合后节省的总通信时间。&#125;</span><br><span class="line">	\label&#123;fig:Fusion_condition_example&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:Fusion_condition_example&#125; 进一步展示了融合条件的直观解释。公式~\ref&#123;eq:fusion_condition&#125; 左侧可理解为由于延迟第 $k$ 层以与第 $k-1$ 层融合而引入的 \textit&#123;额外等待时间&#125; $t_&#123;\text&#123;wait&#125;&#125;$；右侧则对应于融合后实现的 \textit&#123;通信时间缩减&#125; $t_&#123;\text&#123;reduce&#125;&#125;$。因此，融合条件可以总结为：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_&#123;\text&#123;wait&#125;&#125; &lt; t_&#123;\text&#123;reduce&#125;&#125;</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">若采用线性模型，通信时间 $t_p(k)$可以表示为：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_p(k) = a + b \cdot S(k)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">其中 $S(k)$ 表示第 $k$ 层的参数大小，$a$ 为通信启动延迟，$b$ 为每字节传输开销。  </span><br><span class="line"></span><br><span class="line">将该模型代入公式~\ref&#123;eq:fusion_condition&#125; 右侧可得：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_&#123;\text&#123;reduce&#125;&#125; = a + b \cdot S(k) + a + b \cdot S(k-1) - a - b \cdot [S(k) + S(k-1)] = a</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">因此，融合的一般条件变为：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_&#123;\text&#123;wait&#125;&#125; &lt; a</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">这表明，只有当额外等待时间不超过启动延迟 $a$ 时，融合才是有益的，这与直观理解一致。  </span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line">Fig.~\ref&#123;fig:Merged gradient communication&#125; illustrates the effect of gradient fusion using a 5-layer DNN as an example. For layer 5, its communication time $t_p^&#123;(5)&#125;$ can be fully hidden behind the backward computation time $t_b^&#123;(4)&#125;$, so no fusion is required. For layer 4, however, the communication time $t_p^&#123;(4)&#125;$ is larger than $t_b^&#123;(3)&#125;$. If layers 4 and 3 are fused and sent together (Fig.~\ref&#123;fig:Merged gradient communication&#125;, row 3), the communication can complete earlier than when they are sent separately (row 2). Conversely, for layers 2 and 1, fusion results in a later completion time compared to separate transmissions, which is undesirable.  </span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[scale=0.7]&#123;figures/Merged gradient communication.png&#125;</span><br><span class="line">	\caption&#123;Illustration of merged-gradient communication on a 5-layer DNN. Row 2: communication without fusion; Row 3: communication with fusion.&#125;</span><br><span class="line">	\label&#123;fig:Merged gradient communication&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">This example shows that not all fusion operations are beneficial. A critical question is how to determine which layers should be fused in order to achieve optimal overlap between computation and communication. This relies on accurately modeling the computation and communication timeline of each layer during training. For clarity, we summarize the commonly used mathematical symbols in Table~\ref&#123;tab:timeline&#125;. Since the computation time $t_b^&#123;(l)&#125;$ of each layer remains relatively stable across iterations, it can be profiled via pretraining. The communication time $t_p^&#123;(l)&#125;$, however, must be estimated using an accurate communication model, because the decision of whether a layer should be fused is an iterative process: once a layer is determined to be fused, the timeline must be updated accordingly, and the communication time of the fused parameters can only be inferred from the communication model.  </span><br><span class="line"></span><br><span class="line">\begin&#123;table&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\caption&#123;Timeline representation of computation and communication.&#125;</span><br><span class="line">	\label&#123;tab:timeline&#125;</span><br><span class="line">	\renewcommand&#123;\arraystretch&#125;&#123;1.2&#125;</span><br><span class="line">	\begin&#123;tabularx&#125;&#123;\linewidth&#125;&#123;cX&#125;</span><br><span class="line">		\hline</span><br><span class="line">		\textbf&#123;Symbol&#125; &amp; \textbf&#123;Meaning&#125; \\ \hline</span><br><span class="line">		\( t_b(k) \)    &amp; Backward computation time of layer \(k\). \\  </span><br><span class="line">		\( \tau_b(k) \) &amp; Start time of backward computation for layer \(k\). \\  </span><br><span class="line">		\( T_b(k) \)    &amp; Completion time of backward computation for layer \(k\). \\  </span><br><span class="line">		\( t_p(k) \)    &amp; Communication time of layer \(k\)&#x27;s gradients. \\  </span><br><span class="line">		\( \tau_p(k) \) &amp; Start time of communication for layer \(k\). \\  </span><br><span class="line">		\( T_p(k) \)    &amp; Completion time of communication for layer \(k\). \\  </span><br><span class="line">		\( S(k) \)      &amp; Parameter size of layer \(k\). \\  </span><br><span class="line">		\( t_w \)       &amp; Time to write gradients to the buffer. \\ \hline</span><br><span class="line">	\end&#123;tabularx&#125;</span><br><span class="line">\end&#123;table&#125;</span><br><span class="line"></span><br><span class="line">An appropriate fusion condition is crucial to the effectiveness of gradient fusion. In MG-WFBP, the fusion condition is derived only for a specific case (e.g., the third layer). In this work, we generalize the derivation to an arbitrary layer $k$, thus providing a more general formulation of the fusion condition.  </span><br><span class="line"></span><br><span class="line">Based on the timeline model, IMerge adopts a greedy strategy to determine whether to fuse the gradients of consecutive layers. Specifically, for each layer, we iteratively evaluate the potential impact of fusion on the completion time. The key principle is that up to the current layer, the overall communication completion time should remain optimal. This layer-by-layer decision process enables IMerge to adaptively determine the most beneficial fusion opportunities and the corresponding communication schedule.  </span><br><span class="line"></span><br><span class="line">% Fusion condition derivation</span><br><span class="line">To determine whether fusing layer $k$ with its preceding layer $k-1$ is beneficial, we compare the communication completion times with and without fusion. Let $T_p(k-1)$ denote the completion time of layer $k-1$&#x27;s communication without fusion:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	T_p(k-1) = \max\&#123; \tau_b(k-1) + t_b(k-1) + t_w,\ \tau_p(k) + t_p(k) \&#125; + t_p(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">If fusion is applied, let $t_p&#x27;(k-1)$ denote the updated communication time of the merged gradient, and the new completion time becomes:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	T_p&#x27;(k-1) = \max\&#123; \tau_b(k-1) + t_b(k-1) + t_w,\ \tau_p(k) \&#125; + t_p&#x27;(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">Fusion is beneficial only if it reduces the overall communication completion time, i.e.,</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = T_p(k-1) - T_p&#x27;(k-1) &gt; 0</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">Depending on the relationship between $\tau_b(k-1) + t_b(k-1) + t_w$ and $\tau_p(k)$, we identify three cases:  </span><br><span class="line"></span><br><span class="line">\textbf&#123;Case 1:&#125; $\tau_b(k-1) + t_b(k-1) + t_w &lt; \tau_p(k) &lt; \tau_p(k) + t_p(k)$</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = t_p(k) + t_p(k-1) - t_p&#x27;(k-1) &gt; 0</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">Fusion is always beneficial.  </span><br><span class="line"></span><br><span class="line">\textbf&#123;Case 2:&#125; $\tau_p(k)&lt;\tau_p(k) + t_p(k) &lt; \tau_b(k-1) + t_b(k-1) + t_w$</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = t_p(k-1) - t_p&#x27;(k-1) &lt; 0</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">In this case, fusion is always not beneficial.  </span><br><span class="line"></span><br><span class="line">\textbf&#123;Case 3:&#125; $\tau_p(k) &lt; \tau_b(k-1) + t_b(k-1) + t_w &lt; \tau_p(k) + t_p(k)$</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\Delta T = \tau_p(k) + t_p(k) + t_p(k-1) - \tau_b(k-1) - t_b(k-1) - t_w - t_p&#x27;(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">Fusion is beneficial if:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\tau_b(k-1) + t_b(k-1) + t_w - \tau_p(k) &lt; t_p(k) + t_p(k-1) - t_p&#x27;(k-1)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">Combining the above three cases, the general fusion condition is:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	\tau_b(k-1) + t_b(k-1) + t_w - \tau_p(k) &lt; t_p(k) + t_p(k-1) - t_p&#x27;(k-1)</span><br><span class="line">	\label&#123;eq:fusion_condition&#125;</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[scale=0.45]&#123;figures/Fusion_condition_example.png&#125;</span><br><span class="line">	\caption&#123;An illustration of the fusion condition. $t_&#123;\text&#123;wait&#125;&#125;$ represents the extra waiting time incurred when layer $k$ is delayed to merge with layer $k-1$, while $t_&#123;\text&#123;reduce&#125;&#125;$ denotes the total communication time saved by fusion.&#125;</span><br><span class="line">	\label&#123;fig:Fusion_condition_example&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">Fig.~\ref&#123;fig:Fusion_condition_example&#125; further illustrates the intuition behind the fusion condition. The left-hand side of Eq.~\ref&#123;eq:fusion_condition&#125; can be interpreted as the \textit&#123;extra waiting time&#125; $t_&#123;\text&#123;wait&#125;&#125;$ introduced by postponing the transmission of layer $k$ to merge with layer $k-1$, while the right-hand side corresponds to the \textit&#123;communication time reduction&#125; $t_&#123;\text&#123;reduce&#125;&#125;$ achieved after fusion. Therefore, the fusion condition can be summarized as:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_&#123;\text&#123;wait&#125;&#125; &lt; t_&#123;\text&#123;reduce&#125;&#125;</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">If a linear model is adopted, the communication time $t_p(k)$ can be expressed as:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_p(k) = a + b \cdot S(k)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">where $S(k)$ denotes the parameter size of layer $k$, $a$ is the startup latency, and $b$ is the per-byte transmission cost.  </span><br><span class="line"></span><br><span class="line">By substituting this model into the right-hand side of Eq.~\ref&#123;eq:fusion_condition&#125;, we obtain:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_&#123;\text&#123;reduce&#125;&#125; = a + b \cdot S(k) + a + b \cdot S(k-1) - a - b \cdot [S(k) + S(k-1)] = a</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">Thus, the general fusion condition becomes:</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_&#123;\text&#123;wait&#125;&#125; &lt; a</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">This indicates that fusion is beneficial only when the additional waiting time does not exceed the startup latency $a$, which is consistent with intuitive understanding.  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">% 通信模型</span><br><span class="line">但是，在参数服务器模式下，通信过程呈现典型的多对一模式，线性模型在此场景下不能准确刻画通信特性。</span><br><span class="line">在本节中，我们建立了一种更契合参数服务器（PS）架构的通信模型，从而准确预测通信开销，为融合判断提供准确依据。</span><br><span class="line"></span><br><span class="line">由于PS架构采用的是典型的多对一通信模式，通信时的可用带宽受限于同时与 PS 发生交互的 worker 数。且由于潜在的 TCP Incast 问题，还可能出现丢包导致的重传时间，基于此，本文初步建立如下通信模型：</span><br><span class="line"></span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_p = \alpha + \frac&#123;S \cdot N&#125;&#123;B&#125; + \gamma \cdot N</span><br><span class="line">	\label&#123;eq:ps_model&#125;</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">其中，$t_p$ 表示通信时间，$\alpha$ 表示固定的启动延迟（如 TCP 连接建立或系统调用开销），$S$ 为通信量，$B$ 为带宽，$N$ 为同时与 PS 通信的工作节点数，$\gamma$ 用于表征带宽竞争程度。模型的各项系数可以通过拟合获得。</span><br><span class="line"></span><br><span class="line">我们基于 RPC 框架设计了一个流量发送模拟器，用于模拟 PS 架构下的多对一通信模式，从而获得拟合通信模型的时间数据。</span><br><span class="line"></span><br><span class="line">实验结果表明，小梯度和大梯度在网络拥塞下的表现差异显著。</span><br><span class="line">当参数规模超过某一阈值时，通信时间会出现突增。</span><br><span class="line">而在该阈值两侧，实验数据与模型拟合结果均较为吻合，经过测试该阈值为 36768（等于 2^15），故本文以阈值为界，将两侧的数据分别对模型进行拟合，得到两组不同的系数。拟合的结果如图[]所示，两段模型中所有数据点与拟合值的平均相对误差分别为 10.7%和 13.8%。</span><br><span class="line"></span><br><span class="line">将该通信模型代入公式~\ref&#123;eq:fusion_condition&#125;，即可推导出逐层的融合条件。然而，若直接将并发通信数 $N$ 视为工作节点总数，会引入显著偏差。</span><br><span class="line">这是因为理论模型假设所有工作节点同时发起通信，</span><br><span class="line">而在实际中，各工作节点发起通信的时刻并不完全同步。</span><br><span class="line">这种假设会导致预测通信时间被系统性高估，使得融合策略更倾向于判定为可融合，从而降低并行度。在大规模系统下，该问题甚至可能导致通信模式退化为近似串行。</span><br><span class="line"></span><br><span class="line">为此，我们将并发通信数 $N$ 重新定义为：</span><br><span class="line">\[</span><br><span class="line">N = P \cdot N_w</span><br><span class="line">\]</span><br><span class="line">其中，$N_w$ 为工作节点总数，$P \in (0, 1]$ 为并发概率，$P \cdot N_w$ 表示期望的并发通信节点数。</span><br><span class="line">由此得到修正后的通信模型：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">	t_p = \alpha + \frac&#123;S \cdot P \cdot N_w&#125;&#123;B&#125; + \gamma \cdot P \cdot N_w</span><br><span class="line">	\label&#123;eq:ps_model_refined&#125;</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">并发概率 $P$ 在准确建模通信行为中至关重要。</span><br><span class="line">但在分布式训练中，工作节点缺乏全局同步信息，无法通过解析方式推导出 $P$。</span><br><span class="line">因此，因此本文对实际训练过程中产生的通信开销进行提取，并将其代入模型进行拟合，从而经验性地确定 $P$ 的取值。</span><br><span class="line">该方法使得通信模型在 PS 架构下更为实用和精确，可作为融合策略的判断依据。</span><br><span class="line"></span><br><span class="line">% 算法</span><br><span class="line">基于公式~\ref&#123;eq:fusion_condition&#125; 所定义的融合条件，</span><br><span class="line">以及修正后的契合参数服务器的通信模型（公式~\ref&#123;eq:ps_model_refined&#125;），</span><br><span class="line">我们通过贪心算法，迭代式地逐层查找神经网络中需要作融合操作的层，生成相应的融合分组。</span><br><span class="line">\begin&#123;algorithm&#125;[htbp]</span><br><span class="line">	\caption&#123;生成合并的梯度组&#125;</span><br><span class="line">	\label&#123;alg:merge_group&#125;</span><br><span class="line">	\KwIn&#123;$L$: 网络层数; $t_b[1...L]$: 各层反向计算时间; \\</span><br><span class="line">	\quad \quad $s^&#123;(1)&#125;, s^&#123;(2)&#125;, ..., s^&#123;(L)&#125;$: 各层参数大小; $t_p$: 通信模型&#125;</span><br><span class="line">	\KwOut&#123;合并后的梯度组 $\mathcal&#123;G&#125;$&#125;</span><br><span class="line">	初始化 $\tau_b[1...L]$ \tcp*&#123;反向计算开始时间&#125;</span><br><span class="line">	初始化 $t_p[1...L]$ \tcp*&#123;通信时间&#125;</span><br><span class="line">	初始化 $\tau_p[1...L]$ \tcp*&#123;通信开始时间&#125;</span><br><span class="line">	\For&#123;$l = L \rightarrow 1$&#125;&#123;</span><br><span class="line">		$T_b[l] \leftarrow \tau_b[l - 1] + t_b[l - 1] + t_w$\;</span><br><span class="line">		$\tau_p[l] \leftarrow T_b[l]$\;</span><br><span class="line">		$T_p[l] \leftarrow \tau_p[l] + t_p[l]$\;</span><br><span class="line">		\If&#123;$T_p[l] &gt; T_p[l-1]$&#125;&#123;</span><br><span class="line">			保持独立\;</span><br><span class="line">		&#125;</span><br><span class="line">		\Else&#123;</span><br><span class="line">			$t_&#123;wait&#125; \leftarrow T_b[l - 1] - \tau_p[l]$\;</span><br><span class="line">			$t_&#123;reduce&#125; \leftarrow t_p[s^&#123;(l)&#125;] + t_p[s^&#123;(l-1)&#125;] - t_p[s^&#123;(l)&#125; + s^&#123;(l-1)&#125;]$\;</span><br><span class="line">			\If&#123;$t_&#123;wait&#125; &lt; t_&#123;reduce&#125;$&#125;&#123;</span><br><span class="line">				执行融合\;</span><br><span class="line">				$s^&#123;(l-1)&#125; \leftarrow s^&#123;(l-1)&#125; + s^&#123;(l)&#125;$\;</span><br><span class="line">				重新计算 $t_p$ 和 $\tau_p$\;</span><br><span class="line">			&#125;</span><br><span class="line">			\Else&#123;</span><br><span class="line">				保持独立\;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">\end&#123;algorithm&#125;</span><br><span class="line"></span><br><span class="line">算法~\ref&#123;alg:merge_group&#125; 展示了融合分组生成算法的流程。</span><br><span class="line">算法首先计算每层的反向计算与通信时间线（步骤 1--3），</span><br><span class="line">然后自顶向下遍历各层，判断将当前层与前一层合并是否能缩短总通信时间（步骤 4--20）。</span><br><span class="line">若融合所节省的时间大于引入的等待时间（即 $t_&#123;wait&#125; &lt; t_&#123;reduce&#125;$），则执行融合；否则保持独立。通过逐层迭代，算法能够自适应地确定最优的梯度融合分组，以此来指导实际训练过程中每一层参数的通信时机。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">在参数服务器（PS）架构的分布式训练中，固有的多对一通信模式可能导致严重的网络拥塞，从而显著限制整体训练吞吐率。为缓解 PS 端的带宽争用，本文进一步提出了一种**交错通信调度（Interleaved Communication Scheduling）**策略。在梯度融合策略的基础上，通过交错地调度融合后的梯度传输，能够有效减少同时发生的大流量传输，缓解各工作节点之间的网络资源竞争。</span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:interleaved_comm&#125; 展示了梯度融合通信示意图与交错融合通信示意图。具体来说，图~\ref&#123;fig:interleaved_comm&#125;(a) 展示了仅采用梯度融合时的通信模式：尽管融合连续层的梯度可以减少启动延迟，但仍存在较高的并发通信流量和潜在的网络拥塞问题。图~\ref&#123;fig:interleaved_comm&#125;(b) 展示了本文提出的交错融合通信调度，其同时结合了**跨迭代（inter-iteration）和单迭代内（intra-iteration）**的交错方式。前者旨在减少通信时的数</span><br><span class="line">据量，而后者旨在减少通信时的并发数，从而进一步降低峰值网络占用并提升整体通信效率。</span><br><span class="line"></span><br><span class="line">跨迭代交错的目标是将相邻参数组的通信时间错开到不同迭代中。基于梯度融合策略，我们首先将连续层的参数合并为单次传输的基本单元，再将这些梯度组分配到不同的同步周期中。设同步周期为 $T$，则第 $i$ 个梯度组在编号为 $i % T + kT$（$k=0,1,2,\dots,N$）的迭代中参与同步。这样，跨迭代交错能够将参数同步均匀分散到多个迭代中，有效减少单次迭代的通信量。</span><br><span class="line"></span><br><span class="line">这一交错方式本质上降低了参数的通信频率。在大多数迭代中，本地模型独立更新，仅在其分配到的周期到来时才进行全局同步。然而，这种独立探索可能导致各本地模型出现较大偏差，此时若直接执行简单的聚合平均可能不利于继承各个工作节点自身探索的有益信息，因此在参数的更新策略上本文使用弹性平均 SGD算法（Elastic Averaging SGD, EASGD）\cite&#123;zhang2015deep&#125; 来更新参数，相关公式如式~(\ref&#123;eq:local_update&#125;) 和式~(\ref&#123;eq:global_update&#125;) 所示。</span><br><span class="line"></span><br><span class="line">在公式~(\ref&#123;eq:local_update&#125;) 中，本地模型更新时同时考虑新计算得到的梯度和本地模型与全局模型的偏差，从而约束本地模型保持接近全局一致。公式~(\ref&#123;eq:global_update&#125;) 则通过在全局更新时保留部分历史信息，而不仅仅是对各个本地模型进行平均，从而在全局一致性和局部探索之间取得平衡。</span><br><span class="line"></span><br><span class="line">单迭代内交错的目的是在单次迭代中错开各 worker 节点的通信时间，避免其同时占用网络资源并造成拥塞。与异步训练不同，这种方法保证了每次迭代的全局更新仍然包含所有 worker，在提升迭代速度的同时维持同步训练的收敛性与精度。</span><br><span class="line"></span><br><span class="line">由于跨迭代交错的存在，每次迭代中仅有一部分梯度组需要通信。例如，在图~\ref&#123;fig:Inter-iteration&#125; 所示的场景下，若融合策略将参数划分为 9 个组（编号 0–8），同步周期设为 3，则通信分布为：第 1 次迭代中组 2、5、8 通信；第 2 次迭代中组 1、4、7 通信；第 3 次迭代中组 0、3、6 通信；随后该模式每 3 次迭代循环一次。</span><br><span class="line"></span><br><span class="line">在任意一次迭代中，所涉及的梯度组通常为非相邻编号，因此会产生网络的空闲时间。这些空闲时间可以被均匀分配为通信时隙供不同 worker 使用，从而有效减少并发通信并缓解网络拥塞。</span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:intra_iter_slots&#125; 展示了在第 2 次迭代中的单迭代内交错过程。在该示例中，共有 9 个融合梯度组，交错周期为 3。比如，第 1 组可以在第 5 组与第 2 组的通信时间窗口中进行通信；类似地，第 4 组在第 8 组与第 5 组之间的窗口中通信。</span><br><span class="line"></span><br><span class="line">由于不同层的反向传播的时间不同，各融合组所能利用的通信时隙也不相同。算法~\ref&#123;alg:allocate_slots&#125; 给出了具体的分配规则。对于任一组融合参</span><br><span class="line">数，其所能允许的通信时长是在下一组融合参数的通信时刻到来之前，当交错周期为</span><br><span class="line">k时，若当前待通信的融合参数组号为$k_0$，则下一轮发生通信的融合参数组号为 $k_0+k$,那么对于第 $k_0$ 组参数而言，其所能分到的总时隙为$\tau_b(k_0+k)-\tau_b(k_0)$近似等于$\tau_b(k_0+k+1)-\tau_b(k_0+1)$，如图~\ref&#123;fig:intra_iter_slots&#125;所示，为图 ~\ref&#123;fig:Inter-iteration&#125;展示的例子（融合分组数为 9，交</span><br><span class="line">错周期为 3）取 iteration 等于 2 时迭代内部的通信情况，组号为 1 的参数所能分得的总时隙为第 5 组参数反向传播开始的时间减去第 2 组参数反向传播开始的时间。由于计算过程的 timeline($\tau_b$)已知，因此要求解任意一组融合参数的反向传播开始时间，取该组内最早开始反向传播的层的 $\tau_b$。</span><br><span class="line">对于当前迭代的最后一组（如图~\ref&#123;fig:Inter-iteration&#125; 中的组 6、7、8），其时隙需延伸至下一次迭代的前向传播开始。此时可用的通信时间包含两个部分:(1) 从该组通信开始到当前反向传播结束；(2) 从反向传播结束到下一次前向传播开始。二者相加即为允许的通信时长。已有研究表明反向传播大约是前向传播的两倍 \cite&#123;liu2022modeling&#125;，因此第二部分可近似为第一部分的一半，两部分相加即为总的可用通信时长。在调度过程中，我们利用 timeline($\tau_b$) 直接计算各组的时隙，并结合每层所属的组索引 $g^&#123;(l)&#125;$，将其均匀划分给各个 worker，以有效避免网络拥塞。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">In Parameter Server (PS)-based distributed training, the inherent many-to-one communication pattern can cause severe network congestion, significantly limiting the overall training throughput. To mitigate bandwidth contention on the PS side, we further propose an \textit&#123;Interleaved Communication Scheduling strategy&#125;. Building upon the gradient fusion strategy, this method interleaves the transmission of merged gradients, effectively reducing simultaneous large-volume transfers and alleviating network resource contention among workers.</span><br><span class="line"></span><br><span class="line">Fig.~\ref&#123;fig:interleaved_comm&#125; illustrates the comparison between the Merged-gradient communication strategy and the proposed Interleaved merged-gradient communication scheduling strategy.Specifically, Fig.~\ref&#123;fig:interleaved_comm&#125;(a) shows gradient fusion alone, where consecutive layers are merged to reduce startup latency but still result in considerable concurrent network traffic.Fig.~\ref&#123;fig:interleaved_comm&#125;(b) illustrates the proposed interleaved merged-gradient scheduling, which combines both \textit&#123;inter-iteration&#125; and \textit&#123;intra-iteration&#125; interleaving. The former reduces the data volume communicated per iteration, while the latter decreases the concurrency among workers, thereby lowering peak network usage and improving overall communication efficiency.</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\subfigure[Merged-gradient communication.]&#123;</span><br><span class="line">		\includegraphics[width=0.9\linewidth]&#123;figures/fusion_communication.png&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	\subfigure[Interleaved merged-gradient communication.]&#123;</span><br><span class="line">		\includegraphics[width=0.9\linewidth]&#123;figures/interleaved_fusion_communication.png&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	\caption&#123;Comparison between merged-gradient communication and interleaved merged-gradient communication scheduling.&#125;</span><br><span class="line">	\label&#123;fig:interleaved_comm&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">The goal of inter-iteration interleaving is to stagger the communication of adjacent parameter groups across different iterations. Based on the gradient fusion strategy, consecutive layers are first merged into transmission units, which are then distributed across synchronization periods. Given a synchronization period $T$, the $i$-th group participates in synchronization during iterations indexed as $i \% T + kT$ ($k=0,1,2,\dots,N$). This mechanism spreads parameter synchronization evenly across iterations, effectively reducing per-iteration communication load.</span><br><span class="line"></span><br><span class="line">This approach inherently lowers the communication frequency of each parameter group. In most iterations, local models update independently and only synchronize globally during assigned periods. However, such independent exploration may cause divergence among local models. Simple averaging at synchronization points could undermine useful information learned locally. To address this, we adopt Elastic Averaging SGD (EASGD)~\cite&#123;zhang2015deep&#125; for parameter updates, as described in Eqs.~(\ref&#123;eq:local_update&#125;) and (\ref&#123;eq:global_update&#125;). The local update rule constrains each worker to remain close to the global consensus, while the global update retains part of the historical global state, striking a balance between local exploration and global consistency.</span><br><span class="line"></span><br><span class="line">\begin&#123;align&#125;</span><br><span class="line">	w_&#123;t+1&#125;^k &amp;= w_t^k - \eta g_t^k(w_t^k) - \alpha(w_t^k - w_t) \label&#123;eq:local_update&#125; \\</span><br><span class="line">	w_&#123;t+1&#125; &amp;= (1 - \beta) w_t + \beta \left(\frac&#123;1&#125;&#123;K&#125;\sum_&#123;k=1&#125;^&#123;K&#125;w_t^k\right) \label&#123;eq:global_update&#125;</span><br><span class="line">\end&#123;align&#125;</span><br><span class="line"></span><br><span class="line">Intra-iteration interleaving staggers the communication times of workers within the same iteration, preventing simultaneous usage of network resources and avoiding congestion. Unlike asynchronous training, this method ensures that each iteration’s global update still incorporates all workers, maintaining synchronous training properties in both accuracy and convergence.</span><br><span class="line"></span><br><span class="line">With inter-iteration interleaving, only a subset of parameter groups communicate in each iteration. For example, in Fig.~\ref&#123;fig:Inter-iteration&#125;, when parameters are divided into nine groups (0--8) with a synchronization period of three, groups 2, 5, and 8 communicate in iteration 1; groups 1, 4, and 7 in iteration 2; and groups 0, 3, and 6 in iteration 3. This pattern repeats every three iterations. Within each iteration, the involved groups are non-adjacent, resulting in idle communication slots. These slots can be allocated to workers, reducing concurrency and mitigating network congestion.</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[width=0.75\linewidth]&#123;figures/Inter-iteration.png&#125;</span><br><span class="line">	\caption&#123;Illustration of inter-iteration interleaving.&#125;</span><br><span class="line">	\label&#123;fig:Inter-iteration&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">Fig.~\ref&#123;fig:intra_iter_slots&#125; illustrates intra-iteration interleaving at iteration 2, with nine groups and a staggering period of three. For instance, group 1 communicates in the slot between groups 5 and 2, while group 4 communicates between groups 8 and 5.</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[width=0.75\linewidth]&#123;figures/intra_iter_slots.png&#125;</span><br><span class="line">	\caption&#123;Illustration of intra-iteration interleaving.&#125;</span><br><span class="line">	\label&#123;fig:intra_iter_slots&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">Since the backward computation time varies across layers, different groups have unequal available slots. Algorithm~\ref&#123;alg:allocate_slots&#125; provides the slot allocation rule. For a group $k_0$, the allowed communication duration is bounded by the start of group $k_0+T$, i.e.,</span><br><span class="line">\[</span><br><span class="line">\tau_b(k_0+T) - \tau_b(k_0),</span><br><span class="line">\]</span><br><span class="line">which can be approximated as</span><br><span class="line">\[</span><br><span class="line">\tau_b(k_0+T+1) - \tau_b(k_0+1),</span><br><span class="line">\]</span><br><span class="line">where $\tau_b$ denotes the backward start time of the earliest layer in a group. As shown in Fig.~\ref&#123;fig:intra_iter_slots&#125;, for the example in Fig.~\ref&#123;fig:Inter-iteration&#125; (9 groups, $T=3$), at iteration 2, the slot for group 1 equals the difference between the start times of group 5 and group 2.</span><br><span class="line"></span><br><span class="line">For the last groups in an iteration (e.g., groups 6, 7, and 8 in Fig.~\ref&#123;fig:Inter-iteration&#125;), no group $k_0+T$ exists. In this case, the slot extends until the start of the next iteration’s forward propagation. The available duration consists of two parts: (1) from the start of communication of the current group to the end of backward propagation; and (2) from the end of backward to the start of the next forward pass. Prior work~\cite&#123;liu2022modeling&#125; shows that backward takes approximately twice as long as forward, so the second part is approximated as half of the first. The total communication time is then the sum of both parts.</span><br><span class="line"></span><br><span class="line">During scheduling, we directly compute slots using the timeline $\tau_b$, and with the known group index $g^&#123;(l)&#125;$ for each layer, evenly divide them among the $P$ workers to avoid network congestion.</span><br><span class="line"></span><br><span class="line">\begin&#123;algorithm&#125;[htbp]</span><br><span class="line">	\caption&#123;Allocate Communication Slot for Each Group&#125;</span><br><span class="line">	\label&#123;alg:allocate_slots&#125;</span><br><span class="line">	\KwIn&#123;$N$: number of merged groups; $\tau_b[1...L]$: backward start time of each layer;\\</span><br><span class="line">		$P$: number of workers; $g = [g^&#123;(1)&#125;, g^&#123;(2)&#125;, \dots, g^&#123;(L)&#125;]$: group index; $T$: stagger period&#125;</span><br><span class="line">	\KwOut&#123;$s$: slot of each group&#125;</span><br><span class="line">	Initialize $end\_comp$; \tcp*&#123;Backward phase completion time&#125;</span><br><span class="line">	Initialize $\tau_g[1...N]$; \tcp*&#123;Backward start time of each group&#125;</span><br><span class="line">	\For&#123;$idx = 0 \rightarrow N-1$&#125;&#123;</span><br><span class="line">		\tcp&#123;Current group communication start&#125;</span><br><span class="line">		\eIf&#123;$idx + 1 &lt; N$&#125;&#123;</span><br><span class="line">			$cur\_comm \gets \tau_g[idx + 1]$;</span><br><span class="line">		&#125;&#123;</span><br><span class="line">			$cur\_comm \gets end\_comp$;</span><br><span class="line">		&#125;</span><br><span class="line">		\tcp&#123;Next group communication start&#125;</span><br><span class="line">		\eIf&#123;$idx + 1 + T &lt; N$&#125;&#123;</span><br><span class="line">			$next\_comm \gets \tau_g[idx + 1 + T]$;</span><br><span class="line">		&#125;&#123;</span><br><span class="line">			\eIf&#123;$idx + 1 + T == N$&#125;&#123;</span><br><span class="line">				$next\_comm \gets end\_comp$;</span><br><span class="line">			&#125;&#123;</span><br><span class="line">				$next\_comm \gets end\_comp + 0.5 \cdot (end\_comp - cur\_comm)$;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		$s[idx] \gets (next\_comm - cur\_comm)/P$;</span><br><span class="line">	&#125;</span><br><span class="line">\end&#123;algorithm&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/" title="IMerge修改（Design）" target="_blank" rel="external">http://example.com/2025/08/29/IMerge修改（Design）/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/yxt2005" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/yxt2005" target="_blank"><span class="text-dark">Yang.x.t.</span><small class="ml-1x">XDUer</small></a></h3>
+        <div>2023级西安电子科技大学本科生，通信工程专业。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2025/08/28/ChatGPT-Plus%E5%8D%87%E7%BA%A7/" title="ChatGPT Plus升级"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/allipay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
