@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>IMerge Implementation部分 | Yang.x.t&#39;s Web</title>
+  <meta name="description" content="原文： 123456789101112131415161718192021222324252627282930313233343536\section&#123;实现&#125;\label&#123;sec:Implementation&#125;为了在真实的分布式环境中评估所提出的 IMerge 框架，我们基于 PyTorch 搭建了一个定制的参数服务器（Parameter Server, P">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IMerge Implementation部分">
+<meta property="og:url" content="http://example.com/2025/08/30/IMerge-Implementation%E9%83%A8%E5%88%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="原文： 123456789101112131415161718192021222324252627282930313233343536\section&#123;实现&#125;\label&#123;sec:Implementation&#125;为了在真实的分布式环境中评估所提出的 IMerge 框架，我们基于 PyTorch 搭建了一个定制的参数服务器（Parameter Server, P">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-08-30T09:00:07.000Z">
+<meta property="article:modified_time" content="2025-08-30T11:32:47.077Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/08/30/IMerge-Implementation%E9%83%A8%E5%88%86/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/yxt2005" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Yang.x.t.</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">XDUer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> xi&#39;an, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%EF%BC%88Hexo%EF%BC%89/">博客搭建（Hexo）</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">学习笔记 - 论文阅读</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/">工具教程</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0/">每日学习</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a><span class="category-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" rel="tag">文献管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag">论文阅读</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Hexo/" style="font-size: 14px;">Hexo</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 14px;">博客搭建</a> <a href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" style="font-size: 13px;">文献管理</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 13px;">论文阅读</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a><span class="archive-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0/">每日学习</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/31/Visio%E7%9A%84%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85%EF%BC%88%E5%9F%BA%E4%BA%8E%E8%A5%BF%E7%94%B5%E6%AD%A3%E7%89%88%E5%8C%96%E5%B9%B3%E5%8F%B0%EF%BC%89/" class="title">Visio的下载安装（基于西电正版化平台）</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-31T12:37:57.000Z" itemprop="datePublished">2025-08-31</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/30/IMerge-Evaluation%E9%83%A8%E5%88%86/" class="title">IMerge Evaluation部分</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-30T12:23:56.000Z" itemprop="datePublished">2025-08-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/30/IMerge-Implementation%E9%83%A8%E5%88%86/" class="title">IMerge Implementation部分</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-30T09:00:07.000Z" itemprop="datePublished">2025-08-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/" class="title">IMerge修改（Design）</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-29T06:48:13.000Z" itemprop="datePublished">2025-08-29</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0/">每日学习</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/08/28/ChatGPT-Plus%E5%8D%87%E7%BA%A7/" class="title">ChatGPT Plus升级</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-08-28T13:17:59.000Z" itemprop="datePublished">2025-08-28</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-IMerge-Implementation部分" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      IMerge Implementation部分
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/08/30/IMerge-Implementation%E9%83%A8%E5%88%86/" class="article-date">
+	  <time datetime="2025-08-30T09:00:07.000Z" itemprop="datePublished">2025-08-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a>
+  </span>
+
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/08/30/IMerge-Implementation%E9%83%A8%E5%88%86/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>原文：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">\section&#123;实现&#125;</span><br><span class="line">\label&#123;sec:Implementation&#125;</span><br><span class="line"></span><br><span class="line">为了在真实的分布式环境中评估所提出的 IMerge 框架，我们基于 PyTorch 搭建了一个定制的参数服务器（Parameter Server, PS）训练系统。本节将详细介绍关键的实现组件，包括基于 RPC 的通信机制、梯度同步机制以及参数分布策略。</span><br><span class="line"></span><br><span class="line">\subsection&#123;分布式训练框架&#125;</span><br><span class="line"></span><br><span class="line">我们选择 PyTorch 作为分布式训练框架的基础，原因在于其模块化设计以及对灵活通信原语的支持。PyTorch 内置的 RPC 模块允许我们模拟 PS 架构下典型的多对一通信模式。每个工作节点独立执行前向与反向传播，而一组 PS 节点则负责模型参数的更新。</span><br><span class="line"></span><br><span class="line">系统使用 \texttt&#123;torch.distributed.rpc&#125; 来实现工作节点与 PS 节点之间的远程过程调用（Remote Procedure Call, RPC）。为了提升性能并避免阻塞计算，我们采用异步 RPC 调用 \texttt&#123;rpc\_async&#125;。这使得工作节点能够在无需等待响应的情况下将梯度更新发送至 PS 节点，并返回一个 \texttt&#123;Future&#125; 对象，该对象可在随后的前向传播中等待获取。</span><br><span class="line"></span><br><span class="line">\subsection&#123;参数服务器系统设计&#125;</span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:multi-ps-system&#125; 展示了整体架构。多个 PS 节点（例如 PS0、PS1、PS2）共同维护全局模型。模型参数被静态划分为大小相等的块，并分布在不同的 PS 节点上。在训练过程中，每个工作节点根据其本地数据计算梯度，并仅将更新发送至负责该参数组的对应 PS 节点。</span><br><span class="line"></span><br><span class="line">每个 PS 节点维护一个消息队列，用于临时存储接收到的梯度更新。当 PS 收到来自某个工作节点的梯度推送时，它会更新本地副本，并在下一次拉取请求中返回最新的参数版本。由 IMerge 确定的通信调度机制保证了这些更新以交错和融合的方式进行，从而最大程度缓解网络竞争。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[width=0.9\linewidth]&#123;figures/multi-ps-system.png&#125;</span><br><span class="line">	\caption&#123;多参数服务器节点架构示意图。&#125;</span><br><span class="line">	\label&#123;fig:multi-ps-system&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">\subsection&#123;通信流程与 Future 同步机制&#125;</span><br><span class="line"></span><br><span class="line">为了将通信与计算解耦，我们使用了预分配的缓冲区和共享的通信线程。每个融合组拥有一个专用的缓冲区，反向计算完成后的各层梯度会被写入该缓冲区。当缓冲区被填满时，后台通信线程将融合后的梯度发送至对应的 PS 节点。</span><br><span class="line"></span><br><span class="line">每个缓冲区都与一个共享的 \texttt&#123;Future&#125; 对象绑定。参与同一融合组的各层均绑定到相同的 \texttt&#123;Future&#125;，该对象在接收到 PS 的响应时被完成。在随后的前向传播过程中，这些层会阻塞在该 \texttt&#123;Future&#125; 上，以确保在继续执行之前获得最新的参数更新。</span><br><span class="line"></span><br><span class="line">\subsection&#123;参数划分与负载均衡&#125;</span><br><span class="line"></span><br><span class="line">为了最小化训练过程中的不均衡，我们通过合理划分模型参数来平衡各 PS 节点的通信与计算负载。与简单的基于大小的划分不同，我们的策略同时考虑了参数大小和梯度更新频率。具体实现中采用了一种贪心的“装箱算法”（bin-packing），将每个参数组分配给当前估计负载最低的 PS 节点。</span><br><span class="line"></span><br><span class="line">这种动态负载均衡机制确保了不会有单个 PS 节点成为通信瓶颈，尤其在 PS 节点数量超过一个时显得尤为关键。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>开头：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">我们在PyTorch框架上实现了提出的IMerge方案。本节将详细说明实现过程中的两个关键方面：</span><br><span class="line">（1）交错融合通信策略的具体实现，包括梯度融合策略与交错传输策略；</span><br><span class="line">（2）基于PyTorch框架的搭建多参数服务器原型系统，采用参数轮询机制实现负载均衡，并整合IMerge策略。</span><br><span class="line">通过将IMerge集成到该原型系统中，我们为评估其在大规模卷积神经网络训练任务上的性能提升提供了实践基础。</span><br></pre></td></tr></table></figure>
+
+<p>第一小节：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">%%% 交错融合通信的实现</span><br><span class="line">\subsection&#123;交错融合通信的实现&#125;</span><br><span class="line"></span><br><span class="line">IMerge中的交错融合通信实现包含四个主要组成部分：</span><br><span class="line">首先，实现计算与通信的解耦，并行化计算与通信；</span><br><span class="line">其次，实现融合通信策略；</span><br><span class="line">第三，实现迭代间交错策略；</span><br><span class="line">最后，实现迭代内交错策略。</span><br><span class="line"></span><br><span class="line">\subsubsection&#123;并行化计算和通信&#125;</span><br><span class="line"></span><br><span class="line">实现融合通信的前提是并行化计算与通信。其关键挑战在于如何对深度神经网络的层级结构进行调度。现有主流深度学习框架在分布式训练中往往保持计算与通信的强串行关系。如何实现两者的解耦，是实现融合通信策略的首要问题。</span><br><span class="line"></span><br><span class="line">PyTorch 提供了一种称为 \textit&#123;hooks&#125; 的机制，能够在前向传播与反向传播的过程中插入任意的自定义操作，为模型层级调度的实现提供了可能。本文在模型的每一层（module）上添加两个hooks：</span><br><span class="line"></span><br><span class="line">\begin&#123;itemize&#125;</span><br><span class="line">	\item \texttt&#123;register\_forward\_pre\_hook&#125;：在每一层的前向计算之前触发；</span><br><span class="line">	\item \texttt&#123;register\_backward\_hook&#125;：在每一层的反向计算完成之后触发。</span><br><span class="line">\end&#123;itemize&#125;</span><br><span class="line"></span><br><span class="line">其中，\texttt&#123;register\_backward\_hook&#125; 用于在每层完成反向计算后立即触发通信操作；而 \texttt&#123;register\_forward\_pre\_hook&#125; 则用于在接收到该层的最新参数之前阻塞前向计算。这种基于 hook 的调度实现了基本的计算与通信的层级并行，为后续IMerge的实现提供了基础。</span><br><span class="line"></span><br><span class="line">\subsubsection&#123;融合通信策略的实现&#125;</span><br><span class="line"></span><br><span class="line">融合通信策略与WFBP的主要区别在于：通信不再在每层反向计算完成后自动触发，而是需要进行决策：是立即进行通信，还是暂存并与其它层的参数合并后再通信。该决策由融合策略控制。</span><br><span class="line"></span><br><span class="line">若选择融合操作，参数将临时存储在 \textit&#123;buffer&#125; 中；若选择通信操作，则buffer中属于同一融合组的所有参数全部取出并融合发送。无论何种情况，每个参数都必须先写入其对应的缓冲区。为避免在训练过程中频繁地修改 buffer带来的开销，我们在训练开始前为每个融合组预先分配缓冲区，其大小由预测的融合分组情况决定。如图~\ref&#123;fig:merge_flow&#125; 所示，当某层的参数完成反向传播后，会被写入所属融合组的缓冲区。由于缓冲区容量事先已知，所以当缓冲区被填满时，表明该组的所有参数均已准备好，可以触发通信操作，否则缓冲区将继续等待剩余参数完成后再启动通信。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[width=1.05\linewidth]&#123;figures/merge_comm_flow.pdf&#125;</span><br><span class="line">	\caption&#123;实现融合通信的流程示意图。&#125;</span><br><span class="line">	\label&#123;fig:merge_flow&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">为避免通信操作阻塞反向传播过程，我们将实际数据传输任务用一个独立的通信线程处理。如图~\ref&#123;fig:merge_flow&#125; 所示，一旦某个融合组的缓冲区被填满（表示组内所有参数已准备好），计算线程将合并后的参数放入通信队列，并立即继续执行后续的反向计算，而无需等待通信完成。通信线程独立运行，从队列中依次取出融合参数组，先执行 \texttt&#123;push&#125; 操作将参数传输至参数服务器（PS），再执行 \texttt&#123;pull&#125; 操作在前向传播开始前取回更新后的参数。</span><br><span class="line"></span><br><span class="line">然而，在一个融合组内，只有最后一个写满缓冲区并触发通信的参数能够直接感知通信结果；而较早写入的参数则无法获知通信的时机或结果。为确保前向传播阶段每层都能可靠高效地获取所需的最新参数，本文利用了 Python 的 \texttt&#123;Future&#125; 对象。具体而言，每次计算线程将参数写入缓冲区时，都会为该参数分配一个 \texttt&#123;Future&#125;。当通信线程完成 push-pull 操作后，会将结果写入共享的 \texttt&#123;Future&#125;。由于同一融合组的所有参数共享同一通信结果（即合并后的参数），因此让它们共享同一个 \texttt&#123;Future&#125;。一旦其中任意一个成员写入 \texttt&#123;Future&#125;，，其它同组参数自然也能共享该数据。后续当计算线程进行至前向传播时，从各层参数分得的 future 中取出对应的通信结果更新本地的模型即可。</span><br><span class="line"></span><br><span class="line">需要注意的是，尽管理想的调度粒度是逐参数级别，但受到 hook 作用范围的限制，实际只能精确到 module 级的调度，因此对于 module内部无法被调度的 parameter，本文将跳过融合条件的判断，直接对其赋予融合的操作。</span><br><span class="line"></span><br><span class="line">\subsubsection&#123;迭代间交错的实现&#125;</span><br><span class="line">交错通信机制的核心由迭代之间（Inter-iteration）的交错和迭代之内（Intra-iteration）的交错两部分组成，作用的对象分别是模型参数与 worker 节点。</span><br><span class="line">当梯度融合策略生成一系列融合参数组后，参数的通信粒度由默认的“层”转变为若干层拼接而成的“组”。设 $G(l)$ 表示分配给第 $l$ 层参数的组索引。每个参数组在其同步周期到来时触发通信。对于迭代之间的交错，我们将不同组参数的同步周期将错开，分散至不同的 iteration，从而避免过度的通信并发。</span><br><span class="line"></span><br><span class="line">假设交错周期记为 $T$。在默认情况下，每个组被安排在满足 $iter = kT \ (k = 0,1,2,\dots)$ 的迭代中进行通信。在这种配置下，通信仅在每 $T$ 次迭代中发生一次，其余迭代网络资源处于闲置状态。为提高带宽利用率并保持网络流量分布均衡，我们引入了一种简单而有效的偏移机制，将部分的通信流量由通信周期所在的iteration 引入至剩余的 iteration 中，以保证各 iteration 通信量的均匀分布。具体来说，定义每层的迭代计数器 $iter(l)$，并初始化为 $iter(l) = G(l) \bmod T$。该初始化保证了同一融合组内的所有层共享相同的通信周期，使得同组参数始终保持相同的通信步调。在训练过程中，每经过一轮反向传播， 各层参数的$iter(l)$ 自增 1。每当有参数的通信周期到来即 $iter(l) = kT ( k=0,1,2,\dots )$时，相应地对该参数触发通信相关的操作。由于不同分组参数的初始iter 被错开，使得训练过程中各组参数的通信步调也随之错开，从而有效降低了单轮迭代内的通信量。</span><br><span class="line"></span><br><span class="line">\subsubsection&#123;迭代内交错的实现&#125;</span><br><span class="line"></span><br><span class="line">迭代之内的交错将不同 worker 节点的通信时机错开,分散至不同的时隙进行通</span><br><span class="line">信，交错时隙大小的确定在 3.3 节中已作阐述，本节进一步介绍该机制的实现细节。</span><br><span class="line"></span><br><span class="line">由于训练过程中 worker 节点对彼此状态的不可感知性，以及网络性能波动的不确定性，实际难以事先指定各 worker 节点的通信先后顺序。为确保同一时刻只有一个worker 节点向参数服务器提起通信的请求，本文设计一个全局共享的通信 、\texttt&#123;flag&#125;。各worker 基于 flag 的状态决定是否触发通信。根据融合策略给出的融合分组，首先为每一组参数分别分配一个 flag 并初始化为 True，当某个 worker 尝试发起通信时，若标志为 \texttt&#123;True&#125;，则其进入通信并立即将标志置为 \texttt&#123;False&#125;，随后根据其分配的时隙延迟等待。延迟结束后，该 worker 将标志重置为 \texttt&#123;True&#125;，允许下一个 worker 进行通信。若某个 worker 发现标志已为 \texttt&#123;False&#125;，则需阻塞并等待，直到标志恢复为 \texttt&#123;True&#125;。后续其它 worker 节点根据此规则依次完成通信，直至所有节点的参数更新信息上传至参数服务器。通过上述交错方式，各 worker 节点在自己的时隙内独立完成通信，有效减少了通信的并发数，从根源上降低了拥塞发生的可能性。</span><br></pre></td></tr></table></figure>
+
+<p>第三小节：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;原型参数服务器系统的实现&#125;</span><br><span class="line"></span><br><span class="line">本节我们基于 Pytorch 框架来搭建参数服务器的原型系统，并整合所设计的通信调度策略，为后续实验验证方案的有效性提供基础。</span><br><span class="line">首先，利用 Pytorch 中的 RPC（Remote Procedure Call）框架作为参数服务器原型系统的通信框架，以模拟worker 节点与 PS 节点间梯度推送和参数拉取的通信过程。</span><br><span class="line">在本文所设计的参数服务器系统中，训练的主要执行逻辑以及通信调度逻辑都位</span><br><span class="line">于worker 节点，而 PS 节点只作为参数聚合的训练中转节点，换言之，worker 类似于网络中的客户端，作为 RPC 的调用方，周期性地向 PS 提起参数更新的请求，PS 类似于网络中的服务端，作为RPC 的被调用方，接收来自worker 的参数更新请求，并且在同步训练的模式下，将阻塞等待至收到来自所有 worker 的请求，再完成参数的聚合并将结果反馈至源 worker 节点。通信操作的触发时刻位于反向传播过程中，因此 worker 对通信结果的实时性要求并不高。基于此，我们采用非阻塞的异步调用 RPC 的方式（torch.distributed.rpc.rpc_async）以提高程序的执行效率，worker在提交通信请求之后不必等待实际的执行结果返回，而是相应获得一个指向任务结果的 future 对象，直至下一轮的前向传播之前再通过 future 将参数更新结果取回并写入本地的模型之中。</span><br><span class="line"></span><br><span class="line">Pytorch 的官方文档中给出了基于 RPC 框架构建参数服务器的典型案例[]，但在其实现中只支持单一的 PS 进程，使得 PS 极易成为网络的带宽瓶颈，故本文在</span><br><span class="line">其基础上拓展为支持多 PS 节点的参数服务器。当 PS 数由一个扩展为多个时，一个必然的改变是需要对模型参数进行分片，并交由不同的 PS 管理，每个 PS 仅负责处理部分的参数（包括通信与计算）。图~\ref&#123;fig:multi-ps-system&#125; 展示了系统的整体架构，为包含 3 个worker 节点与 3个 PS 节点的参数服务器原型系统。该原型系统的设计原则与典型的工业级 PS 系统一致，为后续实验验证提供了真实且可扩展的测试环境。在该系统中，数据集一共被划分为 9 份，每个worker 节点负责其中的 3 份数据；模型参数同样被划分为 9 份，每个 PS 节点负责其中的 3 份参数。所有参数块与 PS 间的对应关系存放在一个映射列表中，作用于整个训练流程，是 PS与 worker 间进行参数交换的依据。每当有待通信的参数时，worker 节点从映射列表中读取负责该参数的 PS，向其提起参数更新的请求，PS 将在阻塞等待至收到来自所有 worker 节点的请求后（PS 节点上的计数器累加到 worker 节点的数量时），完成对该参数块的更新。通过将 IMerge 的交错与融合策略整合进多 PS 架构，我们确保了通信不会集中在某些时间点或某些 PS 节点上，从而进一步缓解了带宽瓶颈。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[htbp]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[width=0.9\linewidth]&#123;figures/multi-ps-system.png&#125;</span><br><span class="line">	\caption&#123;Illustration of multi-PS node parameter server architecture.&#125;</span><br><span class="line">	\label&#123;fig:multi-ps-system&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">需要注意的是，分配给各 PS 的参数量直接决定其计算与通信负载，因此负载均衡尤为关键。与简单的基于大小的切分方法不同，我们采用一种简单有效的参数轮询分配策略，以融合后的参数作为分配的基本单元，首先记录下所有参数块的大小，并将每个 PS 的负载初始化为 0，然后遍历所有的参数块，每一次将待分配的参数交与当前负载最小的 PS，并随即更新该 PS 的负载，依次轮询最终各个 PS 分得的参数量将大致均衡。这种动态的负载均衡方法保证了没有单个 PS 节点会成为通信瓶颈，特别是在 PS 节点数扩展到多个时显得尤为关键。</span><br></pre></td></tr></table></figure>
+
+<p>英文</p>
+<p>开头：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">\section&#123;Implementation&#125;</span><br><span class="line">\label&#123;sec:Implementation&#125;</span><br><span class="line"></span><br><span class="line">We implement the proposed IMerge framework on top of PyTorch. </span><br><span class="line">This section elaborates on two key aspects of the implementation: </span><br><span class="line">(1) the realization of the interleaved merged communication strategy, including gradient fusion and interleaving; </span><br><span class="line">and (2) the construction of a multi-parameter-server (PS) prototype system based on PyTorch, where a parameter polling mechanism is adopted to achieve load balancing and IMerge is fully integrated. </span><br><span class="line">By embedding IMerge into this prototype system, we provide a practical foundation for evaluating its performance improvements on large-scale convolutional neural network training tasks.</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/08/30/IMerge-Implementation%E9%83%A8%E5%88%86/" title="IMerge Implementation部分" target="_blank" rel="external">http://example.com/2025/08/30/IMerge-Implementation部分/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/yxt2005" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/yxt2005" target="_blank"><span class="text-dark">Yang.x.t.</span><small class="ml-1x">XDUer</small></a></h3>
+        <div>2023级西安电子科技大学本科生，通信工程专业。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2025/08/30/IMerge-Evaluation%E9%83%A8%E5%88%86/" title="IMerge Evaluation部分"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2025/08/29/IMerge%E4%BF%AE%E6%94%B9%EF%BC%88Design%EF%BC%89/" title="IMerge修改（Design）"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/allipay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
