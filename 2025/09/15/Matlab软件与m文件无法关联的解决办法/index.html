@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Matlab软件与m文件无法关联的解决办法 | Yang.x.t&#39;s Web</title>
+  <meta name="description" content="参考：Matlab软件与m文件无法关联的解决办法 - 知乎 问题描述在电脑中原本同时安装了 Matlab 2014 和 Matlab 2024（或者其他版本以及卸载重装等情况），当卸载了 2014 版本之后，出现了以下问题：  所有的 .m 文件无法直接双击打开。 双击 .m 文件后，只会启动 Matlab，但不会打开文件。 在「打开方式」中手动选择 Matlab 也无法解决问题，因为默认关联到的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matlab软件与m文件无法关联的解决办法">
+<meta property="og:url" content="http://example.com/2025/09/15/Matlab%E8%BD%AF%E4%BB%B6%E4%B8%8Em%E6%96%87%E4%BB%B6%E6%97%A0%E6%B3%95%E5%85%B3%E8%81%94%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="参考：Matlab软件与m文件无法关联的解决办法 - 知乎 问题描述在电脑中原本同时安装了 Matlab 2014 和 Matlab 2024（或者其他版本以及卸载重装等情况），当卸载了 2014 版本之后，出现了以下问题：  所有的 .m 文件无法直接双击打开。 双击 .m 文件后，只会启动 Matlab，但不会打开文件。 在「打开方式」中手动选择 Matlab 也无法解决问题，因为默认关联到的">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-09-15T05:54:59.000Z">
+<meta property="article:modified_time" content="2025-09-15T06:09:14.936Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/09/15/Matlab%E8%BD%AF%E4%BB%B6%E4%B8%8Em%E6%96%87%E4%BB%B6%E6%97%A0%E6%B3%95%E5%85%B3%E8%81%94%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/yxt2005" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Yang.x.t.</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">XDUer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> xi&#39;an, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%EF%BC%88Hexo%EF%BC%89/">博客搭建（Hexo）</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">学习笔记 - 论文阅读</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0/">每日学习</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" rel="tag">文献管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag">论文阅读</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 14px;">博客搭建</a> <a href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" style="font-size: 13px;">文献管理</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 13px;">论文阅读</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a><span class="archive-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/15/Matlab%E8%BD%AF%E4%BB%B6%E4%B8%8Em%E6%96%87%E4%BB%B6%E6%97%A0%E6%B3%95%E5%85%B3%E8%81%94%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" class="title">Matlab软件与m文件无法关联的解决办法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-15T05:54:59.000Z" itemprop="datePublished">2025-09-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/11/Office%E7%9A%84%E5%8D%B8%E8%BD%BD%E4%B8%8E%E9%87%8D%E8%A3%85/" class="title">Office的卸载与重装</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-11T13:30:00.000Z" itemprop="datePublished">2025-09-11</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/11/%E5%BF%AB%E9%80%9F%E6%88%AA%E5%B1%8F%E3%80%81%E6%A0%87%E6%B3%A8%E3%80%81%E5%A4%8D%E5%88%B6%E5%B7%A5%E5%85%B7/" class="title">Snipaste</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-11T12:30:00.000Z" itemprop="datePublished">2025-09-11</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/11/%E7%99%BD%E9%B2%B8%E5%8A%A0%E9%80%9F%E5%99%A8%E7%9A%84%E5%AE%89%E8%A3%85/" class="title">白鲸加速器</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-11T11:30:00.000Z" itemprop="datePublished">2025-09-11</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/11/Typora/" class="title">Typora 安装与使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-11T10:30:00.000Z" itemprop="datePublished">2025-09-11</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Matlab软件与m文件无法关联的解决办法" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Matlab软件与m文件无法关联的解决办法
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/09/15/Matlab%E8%BD%AF%E4%BB%B6%E4%B8%8Em%E6%96%87%E4%BB%B6%E6%97%A0%E6%B3%95%E5%85%B3%E8%81%94%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" class="article-date">
+	  <time datetime="2025-09-15T05:54:59.000Z" itemprop="datePublished">2025-09-15</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a>
+  </span>
+
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/09/15/Matlab%E8%BD%AF%E4%BB%B6%E4%B8%8Em%E6%96%87%E4%BB%B6%E6%97%A0%E6%B3%95%E5%85%B3%E8%81%94%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p><strong>参考：</strong><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/102282593">Matlab软件与m文件无法关联的解决办法 - 知乎</a></p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>在电脑中原本同时安装了 <strong>Matlab 2014</strong> 和 <strong>Matlab 2024</strong>（或者其他版本以及卸载重装等情况），当卸载了 2014 版本之后，出现了以下问题：</p>
+<ul>
+<li>所有的 <code>.m</code> 文件无法直接双击打开。</li>
+<li>双击 <code>.m</code> 文件后，只会启动 Matlab，但不会打开文件。</li>
+<li>在「打开方式」中手动选择 Matlab 也无法解决问题，因为默认关联到的是 <strong>Matlab Starter Application</strong>，而不是 <strong>Matlab(R2024a)</strong>。</li>
+</ul>
+<p>因此，需要手动修复 <code>.m</code> 文件和 Matlab 的关联。</p>
+<hr>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>通过 Matlab 提供的一个脚本 <strong><code>associateFiles.m</code></strong>，可以重新生成注册表文件（<code>.reg</code>），并写入 Windows 注册表，完成 Matlab 文件类型和当前版本 Matlab 的重新绑定。</p>
+<hr>
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="1-创建-associateFiles-m-文件"><a href="#1-创建-associateFiles-m-文件" class="headerlink" title="1. 创建 associateFiles.m 文件"></a>1. 创建 <code>associateFiles.m</code> 文件</h3><p>将以下代码保存为 <code>associateFiles.m</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br></pre></td><td class="code"><pre><span class="line">%============================================</span><br><span class="line">function associateFiles(action, userExtList, fileStr)</span><br><span class="line"></span><br><span class="line">% associateFiles(action, extList, fileStr)</span><br><span class="line">%</span><br><span class="line">% Makes a registry files that can be used to set correct file associantions on</span><br><span class="line">% a windows platform. The following MATLAB file extensions are supported:</span><br><span class="line">% .m, .mat, .fig, .mexw32, .mexw64, .p, .mdl, .mdlp, .slx, .mldatx, .req,</span><br><span class="line">% .sldd, .slddc, .slxp, .sltx, .mn, .mu, .muphlp, .xvc, .xvz, .ssc, .mlapp,</span><br><span class="line">% .mlappinstall, .mltbx, .mlpkginstall, .mlprj</span><br><span class="line">%</span><br><span class="line">% INPUT:</span><br><span class="line">% action  - optional string. </span><br><span class="line">%           * &#x27;add&#x27; (default) adds/rewrites the MATLAB file association registry</span><br><span class="line">%              keys for this version.</span><br><span class="line">%           * &#x27;delete&#x27; deletes the MATLAB file association registry entries for</span><br><span class="line">%              ALL versions of MATLAB (including &quot;old style&quot; ones)</span><br><span class="line">%           * &#x27;deleteadd&#x27; is the same as &#x27;delete&#x27; followed by &#x27;add&#x27;  </span><br><span class="line">% extList - optional string or cell array of strings containing the file</span><br><span class="line">%           extensions that should be associated with this version. Default is</span><br><span class="line">%           all MATLAB file extension (see above).</span><br><span class="line">% fileStr - optional string with the name of the registry file to be written </span><br><span class="line">%           (possibly including path). Default is the file</span><br><span class="line">%           &#x27;MatlabFileAssocFix.reg&#x27; in the current directory.</span><br><span class="line">%</span><br><span class="line">% USAGE:</span><br><span class="line">% 1) Run with desired options (see above). A registry file should have been </span><br><span class="line">%    created. </span><br><span class="line">% 2) Exit all running instances of MATLAB.</span><br><span class="line">% 3) Make a backup copy of the windows registry if you need to restore the </span><br><span class="line">%    changes, see https://support.microsoft.com/en-us/kb/322756</span><br><span class="line">% 4) Double click on the created file (possibly need to enter a password) and</span><br><span class="line">%    confirm.</span><br><span class="line">% 5) Restart Windows (or explorer.exe).</span><br><span class="line">% 6) The MATLAB files should now be associated with the MATLAB version that the</span><br><span class="line">%    registry file was created in and e.g. m-files should be opened in an</span><br><span class="line">%    already running instance of MATLAB.</span><br><span class="line">%</span><br><span class="line">% EXAMPLES:</span><br><span class="line">% * associateFiles(&#x27;deleteadd&#x27;) - Makes a registry files that deletes all</span><br><span class="line">%   previous MATLAB file association registry keys and write new ones that</span><br><span class="line">%   associates all MATLAB files with the MATLAB version that the registry file</span><br><span class="line">%   was created in.</span><br><span class="line">% * associateFiles(&#x27;&#x27;, &#123;&#x27;.m&#x27;, &#x27;.mat&#x27;, &#x27;.fig&#x27;&#125;, &#x27;myFile&#x27;) - Makes a registry file</span><br><span class="line">%   &quot;myFile.reg&quot; that associates m-, mat- and fig-files with the MATLAB version</span><br><span class="line">%   that the registry file was created in. </span><br><span class="line">%</span><br><span class="line">% VERSION 1.0</span><br><span class="line"></span><br><span class="line">% Defualt input</span><br><span class="line">if (nargin &lt; 1 || isempty(action))</span><br><span class="line">  action      = &#x27;add&#x27;;</span><br><span class="line">end</span><br><span class="line">if (nargin &lt; 2)</span><br><span class="line">  userExtList = &#123;&#125;;</span><br><span class="line">end</span><br><span class="line">if (nargin &lt; 3)</span><br><span class="line">  fileStr = &#x27;&#x27;;</span><br><span class="line">end</span><br><span class="line">if (~iscell(userExtList))</span><br><span class="line">  if (isempty(userExtList))</span><br><span class="line">    userExtList = &#123;&#125;;</span><br><span class="line">  else</span><br><span class="line">    userExtList = &#123;userExtList&#125;;</span><br><span class="line">  end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">% Sanity check</span><br><span class="line">if (~ischar(action) || (~strcmpi(action, &#x27;add&#x27;) &amp;&amp; ...</span><br><span class="line">    ~strcmpi(action, &#x27;delete&#x27;) &amp;&amp; ~strcmpi(action, &#x27;deleteadd&#x27;)))</span><br><span class="line">  error(&#x27;The action to perform must be &#x27;&#x27;add&#x27;&#x27;, &#x27;&#x27;delete&#x27;&#x27; or &#x27;&#x27;deleteadd&#x27;&#x27;!&#x27;)</span><br><span class="line">end</span><br><span class="line">if (~isempty(userExtList) &amp;&amp; ~min(cellfun(@ischar, userExtList)))</span><br><span class="line">  error(&#x27;The file extension list must be a string or a cell array of strings!&#x27;)</span><br><span class="line">end</span><br><span class="line">if (~ischar(fileStr))</span><br><span class="line">  error(&#x27;The file to write to must be a string!&#x27;)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">% Get the currently running MATLAB version</span><br><span class="line">verStr = regexp(version, &#x27;(\d*?\.\d*?\.\d*?)\.&#x27;, &#x27;tokens&#x27;);</span><br><span class="line">verStr = verStr&#123;1&#125;&#123;1&#125;;</span><br><span class="line">verNum = str2double(regexprep(verStr, &#x27;(\d*?\.\d*)[\x0000-\xffff]*&#x27;, &#x27;$1&#x27;));</span><br><span class="line">verHex = sprintf(&#x27;%04x&#x27;, str2double(regexprep(verStr, ...</span><br><span class="line">  &#x27;(\d*?)\.[\x0000-\xffff]*&#x27;, &#x27;$1&#x27;)), str2double(regexprep(verStr, ...</span><br><span class="line">  &#x27;\d*?\.(\d*?)\.[\x0000-\xffff]*&#x27;, &#x27;$1&#x27;)));</span><br><span class="line"></span><br><span class="line">% Get 32/64-bit</span><br><span class="line">arch = computer;</span><br><span class="line">switch arch</span><br><span class="line">  case &#x27;PCWIN&#x27;</span><br><span class="line">    binFolder = &#x27;win32&#x27;;</span><br><span class="line">  case &#x27;PCWIN64&#x27;</span><br><span class="line">    binFolder = &#x27;win64&#x27;;</span><br><span class="line">end</span><br><span class="line">binPath = fullfile(matlabroot, &#x27;bin&#x27;, binFolder);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">% Known MATLAB files with possible DDE actions</span><br><span class="line">fileExtCell = &#123;...</span><br><span class="line">  &#x27;fig&#x27; ,   &#x27;MATLAB Figure&#x27;              , &#x27;-62&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;uiopen(&#x27;&#x27;%1&#x27;&#x27;,1)&#x27;&#125;           , []                          ; ...</span><br><span class="line">  &#x27;m&#x27;     , &#x27;MATLAB Code&#x27;                , &#x27;-58&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;uiopen(&#x27;&#x27;%1&#x27;&#x27;,1)&#x27;&#125;           , &#123;&#x27;Run&#x27;, &#x27;run(&#x27;&#x27;%1&#x27;&#x27;)&#x27;&#125;      ; ...</span><br><span class="line">  &#x27;mat&#x27;   , &#x27;MATLAB Data&#x27;                , &#x27;-59&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Load&#x27;, &#x27;load(&#x27;&#x27;%1&#x27;&#x27;)&#x27;    &#125;           , &#123;&#x27;Open&#x27;, &#x27;uiimport(&#x27;&#x27;%1&#x27;&#x27;)&#x27;&#125;; ...</span><br><span class="line">  &#x27;mdl&#x27;   , &#x27;Simulink Model&#x27;             , &#x27;-61&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Load&#x27;, &#x27;uiopen(&#x27;&#x27;%1&#x27;&#x27;,1)&#x27;&#125;           , []                          ; ...</span><br><span class="line">  &#x27;mdlp&#x27;  , &#x27;Simulink Protected Model&#x27;   , &#x27;-72&#x27;                       , ...</span><br><span class="line">  []                                     , []                          ; ...</span><br><span class="line">  &#x27;mexw32&#x27;, &#x27;MATLAB MEX&#x27;                 , &#x27;-63&#x27;                       , ...</span><br><span class="line">  []                                     , []                          ; ...</span><br><span class="line">  &#x27;mexw64&#x27;, &#x27;MATLAB MEX&#x27;                 , &#x27;-63&#x27;                       , ...</span><br><span class="line">  []                                     , []                          ; ...</span><br><span class="line">  &#x27;mn&#x27;    , &#x27;MuPAD Notebook&#x27;             , &#x27;-66&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;mupad(&#x27;&#x27;%1&#x27;&#x27;)&#x27;&#125;              , []                          ; ...</span><br><span class="line">  &#x27;mu&#x27;    , &#x27;MuPAD Code&#x27;                 , &#x27;-67&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;uiopen(&#x27;&#x27;%1&#x27;&#x27;,1)&#x27;&#125;           , []                          ; ...</span><br><span class="line">  &#x27;muphlp&#x27;, &#x27;MuPAD Help&#x27;                 , &#x27;-68&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;doc(symengine, &#x27;&#x27;%1&#x27;&#x27;)&#x27;&#125;     , []                          ; ...</span><br><span class="line">  &#x27;p&#x27;     , &#x27;MATLAB P-code&#x27;              , &#x27;-60&#x27;                       , ...</span><br><span class="line">  []                                     , []                          ; ...</span><br><span class="line">  &#x27;slx&#x27;   , &#x27;Simulink Model (SLX format)&#x27;, &#x27;-73&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;uiopen(&#x27;&#x27;%1&#x27;&#x27;,1)&#x27;&#125;           , []                          ; ...</span><br><span class="line">  &#x27;ssc&#x27;   , &#x27;Simscape Model&#x27;             , &#x27;-65&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;uiopen(&#x27;&#x27;%1&#x27;&#x27;,1)&#x27;&#125;           , []                          ; ...</span><br><span class="line">  &#x27;xvc&#x27;   , &#x27;MuPAD Graphics&#x27;             , &#x27;-69&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;mupad(&#x27;&#x27;%1&#x27;&#x27;)&#x27;&#125;              , []                          ; ...</span><br><span class="line">  &#x27;xvz&#x27;   , &#x27;MuPAD Graphics&#x27;             , &#x27;-70&#x27;                       , ...</span><br><span class="line">  &#123;&#x27;Open&#x27;, &#x27;mupad(&#x27;&#x27;%1&#x27;&#x27;)&#x27;&#125;              , []                          ; ...</span><br><span class="line">  &#x27;mlapp&#x27;       , &#x27;MATLAB Application&#x27;              , [] , [], []      ; ... </span><br><span class="line">  &#x27;mltbx&#x27;       , &#x27;MATLAB Toolbox&#x27;                  , [] , [], []      ; ... </span><br><span class="line">  &#x27;mldatx&#x27;      , &#x27;Simulink Scenario&#x27;               , [] , [], []      ; ...  </span><br><span class="line">  &#x27;req&#x27;         , &#x27;Simulink Requirements Link&#x27;      , [] , [], []      ; ... </span><br><span class="line">  &#x27;sldd&#x27;        , &#x27;Simulink Dictionary&#x27;             , [] , [], []      ; ... </span><br><span class="line">  &#x27;slddc&#x27;       , &#x27;Simulink Dictionary&#x27;             , [] , [], []      ; ...      </span><br><span class="line">  &#x27;mlappinstall&#x27;, &#x27;MATLAB Application&#x27;              , [] , [], []      ; ...  </span><br><span class="line">  &#x27;mlpkginstall&#x27;, &#x27;MATLAB Support Package&#x27;          , [] , [], []      ; ... </span><br><span class="line">  &#x27;slxp&#x27;        , &#x27;Simulink Protected Model Package&#x27;, [] , [], []      ; ... </span><br><span class="line">  &#x27;sltx&#x27;        , &#x27;Simulink Template&#x27;               , [] , [], []      ; ... </span><br><span class="line">  &#x27;mlprj&#x27;       , &#x27;MATLAB Project&#x27;                  , [] , [], []&#125;;</span><br><span class="line"></span><br><span class="line">% Possibly trim list</span><br><span class="line">if (~isempty(userExtList))</span><br><span class="line">  fileExtCell = fileExtCell(ismember(fileExtCell(:, 1), ...</span><br><span class="line">    regexprep(userExtList, &#x27;\.&#x27;, &#x27;&#x27;)), :);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">% Make registry file</span><br><span class="line">if (~isempty(fileStr))</span><br><span class="line">  % Possibly add file extension</span><br><span class="line">  [~, ~, tmp] = fileparts(fileStr);</span><br><span class="line">  if (isempty(tmp))</span><br><span class="line">    fileStr = [fileStr, &#x27;.reg&#x27;];</span><br><span class="line">  end</span><br><span class="line">  fid = fopen(fileStr, &#x27;w&#x27;);</span><br><span class="line">else</span><br><span class="line">  fid = fopen(&#x27;MatlabFileAssocFix.reg&#x27;, &#x27;w&#x27;);</span><br><span class="line">end</span><br><span class="line">if (fid == -1)</span><br><span class="line">  error(&#x27;Failed to create registry file&#x27;)</span><br><span class="line">end</span><br><span class="line">% Write intial lines</span><br><span class="line">fprintf(fid, &#x27;%s\r\n\r\n&#x27;, &#x27;Windows Registry Editor Version 5.00&#x27;);</span><br><span class="line">fprintf(fid, &#x27;%s\r\n\r\n&#x27;, &#x27;;FIXES MATLAB FILE ASSOCIATIONS&#x27;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">% REMOVE OLD KEYS</span><br><span class="line">explorerKey = [&#x27;HKEY_CURRENT_USER\Software\Microsoft\Windows\&#x27;, ...</span><br><span class="line">  &#x27;CurrentVersion\Explorer\FileExts&#x27;];</span><br><span class="line">% Iterate over file extensions</span><br><span class="line">for fileExtNo = 1 : size(fileExtCell, 1)</span><br><span class="line">  rmKeys  = &#123;&#125;;</span><br><span class="line">  fileExt = fileExtCell&#123;fileExtNo, 1&#125;;</span><br><span class="line">  </span><br><span class="line">  % File extension keys</span><br><span class="line">  [status, result] = dos([&#x27;reg query HKEY_CLASSES_ROOT /f .&#x27;, fileExt, ...</span><br><span class="line">    &#x27; /k /e&#x27;]);</span><br><span class="line">  if (~status)</span><br><span class="line">    keys = regexp(result, &#x27;(HKEY_CLASSES_ROOT[\x0000-\xffff]*?)\n&#x27;, &#x27;tokens&#x27;);</span><br><span class="line">    rmKeys = [rmKeys, keys&#123;:&#125;];</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">  % Old style keys without version numbers</span><br><span class="line">  if (~strcmpi(fileExt, &#x27;mexw64&#x27;))</span><br><span class="line">    % Uses single DDE key for mex files</span><br><span class="line">    if (strcmpi(fileExt, &#x27;mexw32&#x27;))</span><br><span class="line">      fileExtTmp = &#x27;mex&#x27;;</span><br><span class="line">    else</span><br><span class="line">      fileExtTmp = fileExt;</span><br><span class="line">    end</span><br><span class="line">    [status, result] = dos([&#x27;reg query HKEY_CLASSES_ROOT /f &#x27;, ...</span><br><span class="line">      fileExtTmp, &#x27;file /k /e&#x27;]);</span><br><span class="line">    if (~status)</span><br><span class="line">      keys = regexp(result, &#x27;(HKEY_CLASSES_ROOT[\x0000-\xffff]*?)\n&#x27;, ...</span><br><span class="line">        &#x27;tokens&#x27;);</span><br><span class="line">      rmKeys = [rmKeys, keys&#123;:&#125;];</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">  % New style keys with version number</span><br><span class="line">  if (strcmpi(action, &#x27;add&#x27;))</span><br><span class="line">    % Only remove keys related to this version</span><br><span class="line">    [status, result] = dos([&#x27;reg query HKEY_CLASSES_ROOT /f MATLAB.&#x27;, ...</span><br><span class="line">      fileExt, &#x27;.&#x27;, verStr &#x27; /k&#x27;]);</span><br><span class="line">  else</span><br><span class="line">    % Remove keys related to ALL version</span><br><span class="line">    [status, result] = dos([&#x27;reg query HKEY_CLASSES_ROOT /f MATLAB.&#x27;, ...</span><br><span class="line">      fileExt, &#x27;. /k&#x27;]);</span><br><span class="line">  end</span><br><span class="line">  if (~status)</span><br><span class="line">    keys = regexp(result, &#x27;(HKEY_CLASSES_ROOT[\x0000-\xffff]*?)\n&#x27;, &#x27;tokens&#x27;);</span><br><span class="line">    rmKeys = [rmKeys, keys&#123;:&#125;];</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">  % Explorer keys</span><br><span class="line">  [status, result] = dos([&#x27;reg query &#x27;, explorerKey, &#x27; /f .&#x27;, fileExt, ...</span><br><span class="line">    &#x27; /k /e&#x27;]);</span><br><span class="line">  if (~status)</span><br><span class="line">    keys = regexp(result, &#x27;(HKEY_CURRENT_USER[\x0000-\xffff]*?)\n&#x27;, &#x27;tokens&#x27;);</span><br><span class="line">    rmKeys = [rmKeys, keys&#123;:&#125;];</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">  % Write to file</span><br><span class="line">  if (~isempty(rmKeys))</span><br><span class="line">    fprintf(fid, &#x27;%s\r\n\r\n&#x27;, [&#x27;;REMOVES &#x27;, upper(fileExt), ...</span><br><span class="line">      &#x27; FILE ASSOCIATIONS&#x27;]);</span><br><span class="line">    for keyNo = 1 : length(rmKeys)</span><br><span class="line">      key = rmKeys&#123;keyNo&#125;;</span><br><span class="line">      fprintf(fid, &#x27;%s\r\n\r\n&#x27;, [&#x27;[-&#x27;, key, &#x27;]&#x27;]);</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">% ADD KEYS</span><br><span class="line">if (~strcmpi(action, &#x27;delete&#x27;))</span><br><span class="line">  % Get text Persistent Handler</span><br><span class="line">  [status, result] = dos(...</span><br><span class="line">    &#x27;reg query HKEY_CLASSES_ROOT\.txt\PersistentHandler /ve&#x27;);</span><br><span class="line">  if (~status)</span><br><span class="line">    PersistentHandler = regexp(result, &#x27;\&#123;[\x0000-\xffff]*?\&#125;&#x27;, &#x27;match&#x27;);</span><br><span class="line">    PersistentHandler = PersistentHandler&#123;1&#125;;</span><br><span class="line">  else</span><br><span class="line">    PersistentHandler = &#x27;&#x27;;</span><br><span class="line">  end</span><br><span class="line">  % DDE call</span><br><span class="line">  ddeCall = &#x27;ShellVerbs.Matlab&#x27;;</span><br><span class="line">  if (verNum &gt; 8)</span><br><span class="line">    % Changed from R2013a</span><br><span class="line">    ddeCall = [ddeCall, &#x27;.&#x27;, verStr];</span><br><span class="line">  end</span><br><span class="line">  % Default icon</span><br><span class="line">  defIcon = &#x27;m&#x27;;</span><br><span class="line">  if (~exist(fullfile(binPath, &#x27;m.ico&#x27;), &#x27;file&#x27;))</span><br><span class="line">    defIcon = &#x27;&#x27;;</span><br><span class="line">  end</span><br><span class="line">  % Path to MATLAB binary directory with \\</span><br><span class="line">  binPathStr = regexprep(binPath, &#x27;\\&#x27;, &#x27;\\\\&#x27;);</span><br><span class="line">  </span><br><span class="line">  % Write Shell Open key</span><br><span class="line">  key = [&#x27;[HKEY_CLASSES_ROOT\Applications\MATLAB.exe\shell\open&#x27;, ...</span><br><span class="line">    &#x27;\command]%r&#x27;, &#x27;@=&quot;\&quot;&#x27;, binPathStr, &#x27;\\MATLAB.exe\&quot; \&quot;%1\&quot;&quot;%r%r&#x27;];</span><br><span class="line">  fprintf(fid, &#x27;%s\r\n\r\n&#x27;, &#x27;;ADD SHELL OPEN&#x27;);</span><br><span class="line">  lines = regexp(key, &#x27;([\x0000-\xffff]*?)%r&#x27;, &#x27;tokens&#x27;);</span><br><span class="line">  for lineNo = 1 : length(lines)</span><br><span class="line">    fprintf(fid, &#x27;%s\r\n&#x27;, lines&#123;lineNo&#125;&#123;1&#125;);</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">  % Iterate over file types</span><br><span class="line">  for fileExtNo = 1 : size(fileExtCell, 1)</span><br><span class="line">    fileExt = fileExtCell&#123;fileExtNo, 1&#125;;</span><br><span class="line">    </span><br><span class="line">    % File extension keys</span><br><span class="line">    key  = [&#x27;[HKEY_CLASSES_ROOT\.&#x27;, fileExt, &#x27;]%r@=&quot;MATLAB.&#x27;, fileExt, &#x27;.&#x27;, ...</span><br><span class="line">      verStr, &#x27;&quot;%r&#x27;];</span><br><span class="line">    if (strcmpi(fileExt, &#x27;m&#x27;) &amp;&amp; ~isempty(PersistentHandler))</span><br><span class="line">      % Add some values</span><br><span class="line">      key = [key, &#x27;&quot;Content Type&quot;=&quot;text/plain&quot;%r&#x27;, ...</span><br><span class="line">        &#x27;&quot;PerceivedType&quot;=&quot;Text&quot;%r&#x27;];</span><br><span class="line">    end</span><br><span class="line">    key = [key, &#x27;%r&#x27;];</span><br><span class="line">    key = [key, &#x27;[HKEY_CLASSES_ROOT\.&#x27;, fileExt, ...</span><br><span class="line">      &#x27;\OpenWithProgids]%r&quot;MATLAB.&#x27;, fileExt, &#x27;.&#x27;, verStr, &#x27;&quot;=&quot;&quot;%r%r&#x27;];</span><br><span class="line">    if (strcmpi(fileExt, &#x27;m&#x27;) &amp;&amp; ~isempty(PersistentHandler))</span><br><span class="line">      key = [key, &#x27;[HKEY_CLASSES_ROOT\.&#x27;, fileExt, ...</span><br><span class="line">        &#x27;\PersistentHandler]%r@=&quot;&#x27;, PersistentHandler, &#x27;&quot;%r%r&#x27;];</span><br><span class="line">    end</span><br><span class="line">    key  = [key, &#x27;[HKEY_CLASSES_ROOT\.&#x27;, fileExt, ...</span><br><span class="line">      &#x27;\Versions\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, &#x27;]%r&quot;FileVersionMS&quot;=dword:&#x27;, ...</span><br><span class="line">      verHex, &#x27;%r&quot;FileVersionLS&quot;=dword:00000000%r%r&#x27;];</span><br><span class="line">    </span><br><span class="line">    % DDE keys</span><br><span class="line">    ddeData = fileExtCell(ismember(fileExtCell(:, 1), fileExt), :);</span><br><span class="line">    key = [key, &#x27;[HKEY_CLASSES_ROOT\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, ...</span><br><span class="line">      &#x27;]%r@=&quot;&#x27;, ddeData&#123;2&#125;, &#x27;&quot;%r&#x27;];</span><br><span class="line">    if (~isempty(ddeData&#123;3&#125;))</span><br><span class="line">      key = [key, &#x27;&quot;FriendlyTypeName&quot;=&quot;@&#x27;, binPathStr, &#x27;\\matlab.exe&#x27;, ...</span><br><span class="line">        &#x27;,&#x27;, ddeData&#123;3&#125;, &#x27;&quot;%r&#x27;];</span><br><span class="line">    end</span><br><span class="line">    key = [key, &#x27;%r&#x27;];</span><br><span class="line">    % Icon</span><br><span class="line">    icon = fileExt;</span><br><span class="line">    if (~exist(fullfile(binPath, [icon, &#x27;.ico&#x27;]), &#x27;file&#x27;))</span><br><span class="line">      icon = defIcon;</span><br><span class="line">    end</span><br><span class="line">    if (~isempty(icon))</span><br><span class="line">      key = [key, &#x27;[HKEY_CLASSES_ROOT\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, ...</span><br><span class="line">        &#x27;\DefaultIcon]%r@=&quot;&#x27;, binPathStr, &#x27;\\&#x27;, icon, &#x27;.ico,0&quot;%r%r&#x27;];</span><br><span class="line">    end</span><br><span class="line">    % Shell actions</span><br><span class="line">    for shellActionNo = 4:5</span><br><span class="line">      ddePar = ddeData&#123;shellActionNo&#125;;</span><br><span class="line">      if (~isempty(ddePar))</span><br><span class="line">        key = [key, &#x27;[HKEY_CLASSES_ROOT\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, ...</span><br><span class="line">          &#x27;\Shell\&#x27;, ddePar&#123;1&#125;, &#x27;]%r@=&quot;&#x27;, ddePar&#123;1&#125;, &#x27;&quot;%r%r&#x27;];</span><br><span class="line">        key = [key, &#x27;[HKEY_CLASSES_ROOT\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, ...</span><br><span class="line">          &#x27;\Shell\&#x27;, ddePar&#123;1&#125;, &#x27;\command]%r@=&quot;\&quot;&#x27;, binPathStr, ...</span><br><span class="line">          &#x27;\\matlab.exe\&quot;&quot;%r%r&#x27;];</span><br><span class="line">        key = [key, &#x27;[HKEY_CLASSES_ROOT\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, ...</span><br><span class="line">          &#x27;\Shell\&#x27;, ddePar&#123;1&#125;, &#x27;\ddeexec]%r@=&quot;&#x27;, ddePar&#123;2&#125;, &#x27;&quot;%r%r&#x27;];</span><br><span class="line">        key = [key, &#x27;[HKEY_CLASSES_ROOT\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, ...</span><br><span class="line">          &#x27;\Shell\&#x27;, ddePar&#123;1&#125;,&#x27;\ddeexec\application]%r@=&quot;&#x27;, ...</span><br><span class="line">          ddeCall, &#x27;&quot;%r%r&#x27;];</span><br><span class="line">        key = [key, &#x27;[HKEY_CLASSES_ROOT\MATLAB.&#x27;, fileExt, &#x27;.&#x27; verStr, ...</span><br><span class="line">          &#x27;\Shell\&#x27;, ddePar&#123;1&#125;,&#x27;\ddeexec\topic]%r@=&quot;system&quot;%r%r&#x27;];</span><br><span class="line">      end</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    % Explorer keys</span><br><span class="line">    key = [key, &#x27;[&#x27;, explorerKey, &#x27;\.&#x27;, fileExt, &#x27;\OpenWithProgids]%r&#x27;];</span><br><span class="line">    if (strcmpi(fileExt, &#x27;m&#x27;))</span><br><span class="line">      key = [key, &#x27;&quot;m_auto_file&quot;=hex(0):%r&#x27;];</span><br><span class="line">    end</span><br><span class="line">    key = [key, &#x27;&quot;MATLAB.&#x27;, fileExt, &#x27;.&#x27;,  verStr, &#x27;&quot;=hex(0):%r%r&#x27;];</span><br><span class="line">    if (~isempty(ddeData&#123;4&#125;))</span><br><span class="line">      % Add key</span><br><span class="line">      key = [key, &#x27;[&#x27;, explorerKey, &#x27;\.&#x27;, fileExt, ...</span><br><span class="line">        &#x27;\OpenWithList]%r&quot;a&quot;=&quot;MATLAB.exe&quot;%r&quot;MRUList&quot;=&quot;a&quot;%r%r&#x27;];</span><br><span class="line">    else</span><br><span class="line">      key = [key, &#x27;[&#x27;, explorerKey, &#x27;\.&#x27;, fileExt, &#x27;\OpenWithList]%r%r&#x27;];</span><br><span class="line">    end</span><br><span class="line">    % Write to file</span><br><span class="line">    fprintf(fid, &#x27;%s\r\n\r\n&#x27;, [&#x27;;ADD &#x27;, upper(fileExt), ...</span><br><span class="line">      &#x27; FILE ASSOCIATIONS&#x27;]);</span><br><span class="line">    lines = regexp(key, &#x27;([\x0000-\xffff]*?)%r&#x27;, &#x27;tokens&#x27;);</span><br><span class="line">    for lineNo = 1 : length(lines)</span><br><span class="line">      fprintf(fid, &#x27;%s\r\n&#x27;, lines&#123;lineNo&#125;&#123;1&#125;);</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">% Cloese file</span><br><span class="line">fclose(fid);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-运行脚本"><a href="#2-运行脚本" class="headerlink" title="2. 运行脚本"></a>2. 运行脚本</h3><p>在 Matlab 命令窗口运行或直接点击运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">associateFiles</span><br></pre></td></tr></table></figure>
+
+<p>运行完成后，会在当前目录下生成一个注册表文件，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MatlabFileAssocFix.reg</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-应用注册表文件"><a href="#3-应用注册表文件" class="headerlink" title="3. 应用注册表文件"></a>3. 应用注册表文件</h3><ol>
+<li>退出所有正在运行的 Matlab 程序。</li>
+<li>双击生成的 <code>.reg</code> 文件，选择「是」确认修改注册表。</li>
+<li>重启 Windows（或重新启动 <strong>explorer.exe</strong> 进程）。</li>
+</ol>
+<hr>
+<h2 id="效果验证"><a href="#效果验证" class="headerlink" title="效果验证"></a>效果验证</h2><p>完成以上操作后，所有的 <code>.m</code> 文件、<code>.mat</code> 文件、<code>.fig</code> 文件等就会重新与 Matlab 2024 正确关联，可以直接双击打开，并会在已运行的 Matlab 实例中打开文件。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过运行 <code>associateFiles.m</code> 生成注册表修复文件，可以快速解决 <strong>Matlab 文件与版本解绑的问题</strong>。<br> 核心流程为：</p>
+<ol>
+<li>保存并运行脚本。</li>
+<li>生成 <code>.reg</code> 文件。</li>
+<li>导入注册表并重启系统。</li>
+</ol>
+<p>这样即可恢复 <code>.m</code> 文件的正常双击打开功能。 ✅</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/09/15/Matlab%E8%BD%AF%E4%BB%B6%E4%B8%8Em%E6%96%87%E4%BB%B6%E6%97%A0%E6%B3%95%E5%85%B3%E8%81%94%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" title="Matlab软件与m文件无法关联的解决办法" target="_blank" rel="external">http://example.com/2025/09/15/Matlab软件与m文件无法关联的解决办法/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/yxt2005" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/yxt2005" target="_blank"><span class="text-dark">Yang.x.t.</span><small class="ml-1x">XDUer</small></a></h3>
+        <div>2023级西安电子科技大学本科生，通信工程专业。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2025/09/11/Office%E7%9A%84%E5%8D%B8%E8%BD%BD%E4%B8%8E%E9%87%8D%E8%A3%85/" title="Office的卸载与重装"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/allipay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
