@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>BAT-Tree | Yang.x.t&#39;s Web</title>
+  <meta name="description" content="摘要12345分布式深度学习中，参数服务器（Parameter Server, PS）架构是常用的参数同步范式之一。然而，随着集群规模的扩大，PS 架构中的多对一通信模式成为系统可扩展性的主要瓶颈。树型同步策略通过分层聚合能够有效缓解这一问题，但现有方法往往未能彻底避免多对一瓶颈，或忽视异构网络中低带宽链路的影响，导致整体同步性能不佳。为此，本文提出 BAT-Tree，一种面向异构分布式训练的瓶颈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BAT-Tree">
+<meta property="og:url" content="http://example.com/2025/10/01/BAT-Tree/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="摘要12345分布式深度学习中，参数服务器（Parameter Server, PS）架构是常用的参数同步范式之一。然而，随着集群规模的扩大，PS 架构中的多对一通信模式成为系统可扩展性的主要瓶颈。树型同步策略通过分层聚合能够有效缓解这一问题，但现有方法往往未能彻底避免多对一瓶颈，或忽视异构网络中低带宽链路的影响，导致整体同步性能不佳。为此，本文提出 BAT-Tree，一种面向异构分布式训练的瓶颈">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-10-01T10:30:00.000Z">
+<meta property="article:modified_time" content="2025-10-06T13:41:03.453Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2025/10/01/BAT-Tree/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/yxt2005" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Yang.x.t.</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">XDUer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> xi&#39;an, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">Books</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">Links</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%EF%BC%88Hexo%EF%BC%89/">博客搭建（Hexo）</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">学习笔记 - 论文阅读</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0/">每日学习</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-BAT-Tree/">论文写作 - BAT-Tree</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-IMerge%E4%BF%AE%E6%94%B9/">论文写作 - IMerge修改</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/" rel="tag">Markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" rel="tag">博客搭建</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" rel="tag">文献管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag">论文阅读</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/tags/Markdown/" style="font-size: 13px;">Markdown</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 14px;">博客搭建</a> <a href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/" style="font-size: 13px;">文献管理</a> <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" style="font-size: 13px;">论文阅读</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Archive</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a><span class="archive-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-BAT-Tree/">论文写作 - BAT-Tree</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/10/01/BAT-Tree/" class="title">BAT-Tree</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-10-01T10:30:00.000Z" itemprop="datePublished">2025-10-01</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/18/MATLAB%E5%90%AF%E5%8A%A8%E9%BB%91%E6%A1%86-%E5%90%AF%E5%8A%A8%E6%85%A2-%E9%BB%98%E8%AE%A4%E6%96%87%E4%BB%B6%E5%A4%B9%E6%9B%B4%E6%94%B9/" class="title">MATLAB启动黑框,启动慢,默认文件夹更改</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-18T10:35:14.000Z" itemprop="datePublished">2025-09-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/18/MatLab-%E6%95%99%E7%A8%8B/" class="title">MATLAB 入门学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-18T03:17:45.000Z" itemprop="datePublished">2025-09-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/15/Matlab%E8%BD%AF%E4%BB%B6%E4%B8%8Em%E6%96%87%E4%BB%B6%E6%97%A0%E6%B3%95%E5%85%B3%E8%81%94%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" class="title">Matlab软件与m文件无法关联的解决办法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-15T05:54:59.000Z" itemprop="datePublished">2025-09-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+              </p>
+              <p class="item-title">
+                <a href="/2025/09/11/Office%E7%9A%84%E5%8D%B8%E8%BD%BD%E4%B8%8E%E9%87%8D%E8%A3%85/" class="title">Office的卸载与重装</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2025-09-11T13:30:00.000Z" itemprop="datePublished">2025-09-11</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-BAT-Tree" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      BAT-Tree
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2025/10/01/BAT-Tree/" class="article-date">
+	  <time datetime="2025-10-01T10:30:00.000Z" itemprop="datePublished">2025-10-01</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C-BAT-Tree/">论文写作 - BAT-Tree</a>
+  </span>
+
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2025/10/01/BAT-Tree/#comments" class="article-comment-link">Comments</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">分布式深度学习中，参数服务器（Parameter Server, PS）架构是常用的参数同步范式之一。然而，随着集群规模的扩大，PS 架构中的多对一通信模式成为系统可扩展性的主要瓶颈。树型同步策略通过分层聚合能够有效缓解这一问题，但现有方法往往未能彻底避免多对一瓶颈，或忽视异构网络中低带宽链路的影响，导致整体同步性能不佳。</span><br><span class="line"></span><br><span class="line">为此，本文提出 BAT-Tree，一种面向异构分布式训练的瓶颈感知与拓扑感知树型同步算法。BAT-Tree 结合生成树构建与瓶颈感知匹配，以最大化最小链路带宽为优化目标，并改进匹配算法以适配瓶颈优化需求，从而避免通信延迟受制于低带宽链路。同时，BAT-Tree 通过镜像部署机制直接在物理拓扑上执行同步，避免逻辑树映射及节点数量不匹配所带来的额外处理开销，从而提升在异构环境下的通信平衡性与可部署性。</span><br><span class="line"></span><br><span class="line">我们基于 Docker 容器与 PyTorch 框架实现了 BAT-Tree，并开展了算法敏感性分析、同构环境与异构环境三类实验。结果表明，在同构与异构环境下，BAT-Tree 均较现有同步方案实现更高的通信效率。其中，在典型异构带宽场景下，相较默认的单级同步机制，BAT-Tree 在 ResNet18、Vgg16 和 AlexNet 模型上分别实现约 84.9%、121.7% 和 88.7% 的训练速度提升，验证了其在异构拓扑下的有效性与可扩展性。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">近年来，深度神经网络（DNN）在图像识别、语音识别和自然语言处理等领域取得了显著成功。为了进一步提升模型的精度与泛化能力，模型参数规模与训练数据集体量迅速增长，导致单机训练时间大幅增加。因此，分布式训练成为提高训练效率、缩短模型收敛时间的关键途径。在主流的数据并行（data-parallel）范式中，训练数据被划分到多个工作节点上，每个节点独立训练完整模型副本，并在每轮迭代后汇聚梯度进行参数更新。随着集群规模的扩大，通信开销逐渐超过计算开销，成为系统可扩展性的主要瓶颈。</span><br><span class="line"></span><br><span class="line">现有的参数同步机制主要可分为两类：参数服务器（Parameter Server, PS）架构与集体通信（collective communication）机制。PS 架构采用集中式同步方式，多个工作节点与一个或多个服务器交互以存储和更新全局参数。该方式实现简单，但其固有的多对一通信模式容易使服务器成为性能瓶颈，随着集群规模增加，可扩展性显著下降。相对地，集体通信机制（如 Ring Allreduce）通过环形通信结构平衡带宽利用率，有效避免中心拥塞，但其通信代价随节点数量线性增长，在大规模集群中难以兼顾通信效率与可扩展性。</span><br><span class="line"></span><br><span class="line">为缓解 PS 架构的单服务器瓶颈，研究者提出了多服务器和分层聚合等改进策略。其中，树型同步（tree-based synchronization）可视为一种分层式的 PS 架构，通过多级聚合分担通信负载，从而在理论和实践中均提升了可扩展性。尽管如此，现有树型同步方法仍存在若干问题：（1）大多数方法假设网络同构，或仅关注总体带宽利用率，忽视了异构环境中低带宽链路的瓶颈效应；（2）部分树构建算法在复杂拓扑和大规模场景下难以兼顾鲁棒性与低复杂度；（3）逻辑树与物理拓扑之间缺乏有效映射机制，容易因不匹配而使性能受少数瓶颈链路限制。</span><br><span class="line"></span><br><span class="line">在异构网络中，同步延迟通常由最慢的链路决定。因此，核心挑战在于如何感知物理拓扑中的带宽差异，构建既能避开瓶颈链路又易于部署的同步树结构。这正是本文提出 BAT-Tree 算法的主要动机。</span><br><span class="line"></span><br><span class="line">应对上述挑战，本文提出 BAT-Tree，一种面向异构分布式训练的瓶颈感知与拓扑感知树型同步算法。BAT-Tree 通过生成树构建、瓶颈感知二分匹配与镜像树部署三个阶段协同优化通信结构：在生成树阶段构造物理通信拓扑，在匹配阶段以最大化最小链路带宽为目标实现节点配对，在部署阶段引入对称镜像树结构以交替完成聚合与广播，从而在异构网络中获得低延迟与高可扩展性。该算法在节点数非 2 的指数幂时同样适用，整体设计更具通用性与实现效率。</span><br><span class="line"></span><br><span class="line">与现有工作相比，BAT-Tree 具有两方面优势：（1）其瓶颈感知机制使同步时间不再受最慢链路限制，从而显著提升异构环境下的通信效率；（2）其拓扑自适应机制通过镜像部署直接作用于物理拓扑，避免逻辑树映射导致的性能退化，同时在任意规模网络中均可高效部署。</span><br><span class="line"></span><br><span class="line">本文的主要贡献如下：</span><br><span class="line">1）提出了一种瓶颈感知的树型同步方法，有效缓解了异构分布式训练中的通信瓶颈；</span><br><span class="line">2）设计了一种基于生成树构建与二分匹配的同步构造算法，并改进匹配过程以适配瓶颈优化目标；</span><br><span class="line">3）提出镜像部署机制，在物理拓扑上实现自适应同步，提升拓扑感知能力与可部署性；</span><br><span class="line">4）基于 Docker 与 PyTorch 框架实现 BAT-Tree，并在同构与异构 GPU 集群上开展系统实验；</span><br><span class="line">5）实验结果表明，与默认的单级同步机制相比，BAT-Tree 在 ResNet18、Vgg16 和 AlexNet 模型上分别实现约 84.9%、121.7% 和 88.7% 的训练速度提升，验证了算法在异构拓扑下的高效性与可扩展性。</span><br></pre></td></tr></table></figure>
+
+<h2 id="第二节-背景与动机"><a href="#第二节-背景与动机" class="headerlink" title="第二节 背景与动机"></a>第二节 背景与动机</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">A. 参数服务器架构</span><br><span class="line"></span><br><span class="line">参数服务器（Parameter Server, PS）架构是分布式深度学习中最经典的参数同步范式。它采用类似于主从式的工作模式，如图~\ref&#123;fig:ps_arch&#125; 所示。集群中的计算资源按职能可以分为参数服务器节点（Parameter Server, PS）和工作节点（worker）。PS 始终维护最新的全局模型参数；worker 负责梯度计算，在本地训练后将梯度上传至服务器端，由服务器进行聚合并更新参数，再将更新结果发送给所有工作节点。该模式实现简单、扩展方便。</span><br><span class="line"></span><br><span class="line">然而，PS 架构的固有缺陷在于其多对一通信模式。当集群规模扩大时，所有工作节点同时与服务器通信，服务器端很容易成为网络的带宽瓶颈，进而限制系统的可扩展性。</span><br><span class="line"></span><br><span class="line">B. 参数服务器的改进</span><br><span class="line"></span><br><span class="line">在默认的单级参数服务器架构中，通信逻辑通常建立在星型拓扑之上，单个 PS 节点作为中心节点，承受来自所有 worker 的通信流量，极易形成网络拥塞。针对该问题，已有研究提出了两条改进思路：</span><br><span class="line"></span><br><span class="line">多 PS 架构：通过增加参数服务器节点数量，将梯度按分片分别发送至多个 PS，以此分担通信压力。典型代表如 BytePS 框架，在一定程度上缓解了单点压力。但由于通信模式并未根本改变，随着集群规模的增加，“多对一”的瓶颈问题依然突出。</span><br><span class="line"></span><br><span class="line">多级 PS 架构：在通信过程中引入分层聚合机制，以降低单个服务器的带宽压力。具有代表性的是基于树型拓扑的同步策略，通过在组内和组间分层聚合来减轻中心节点负载，从而提升系统扩展性。因此，树型同步逐渐成为缓解通信瓶颈的重要手段。</span><br><span class="line"></span><br><span class="line">C. 现有树型同步方法及其不足</span><br><span class="line"></span><br><span class="line">树型同步的基本思想如图~\ref&#123;fig:tree_sync&#125; 所示，参数聚合与广播过程均可通过树结构在 $\log N$ 步内完成。</span><br><span class="line"></span><br><span class="line">近年来，已有多种基于树拓扑的同步算法被提出。例如，RAT 和 PLink 通过构造生成树实现分层聚合，但其树结构并非标准二叉树，未能彻底消除“多对一”瓶颈；MLNET 分析了节点入度对树构造的影响，但未给出最佳取值与具体算法，且难以适应异构环境；Amazon 的研究将树构造建模为图划分问题，采用 Kernighan–Lin 算法进行节点划分，但在部分场景下无法构造出有效的树，需要借助穷举搜索，复杂度较高；MULTITREE 通过多棵树并行通信提升带宽利用率，但过于强调链路高利用率，忽视了异构环境下瓶颈链路的存在，可能导致树结构不平衡、降低通信效率，同时多棵树的设计也增加了硬件部署成本。</span><br><span class="line"></span><br><span class="line">总体而言，现有树型同步方法仍存在共性不足：多数方法假设网络同构，忽略了异构链路带宽差异；部分算法在构造上缺乏鲁棒性或代价过高；逻辑树与物理网络之间缺乏有效映射机制，当二者不匹配时，同步性能容易受制于瓶颈链路。</span><br><span class="line"></span><br><span class="line">D. 逻辑树与物理树拓扑</span><br><span class="line"></span><br><span class="line">树型同步算法通常以逻辑树拓扑抽象通信关系。例如在二叉树结构下，每个节点的收发规则可由固定的数学表达式描述。图~\ref&#123;fig:tree_topology&#125; 展示了典型的完全二叉树拓扑示例，每个节点的收发规则由其在逻辑树中的位置决定。逻辑树拓扑在实现上清晰直观，但在实际部署时，参数同步需要映射到真实的物理网络拓扑。</span><br><span class="line"></span><br><span class="line">在同构网络中，逻辑树的部署方式对性能影响不大。但在实际的集群环境中，硬件配置往往存在差异，多租户作业也会导致网络带宽争用，从而形成拓扑异构。当逻辑树与物理拓扑不匹配时，部分低带宽链路可能成为限制整体性能的瓶颈，导致同步效率显著下降。</span><br><span class="line"></span><br><span class="line">因此，树型同步算法必须具备拓扑感知能力，能够根据网络状态自适应构造合适的物理树拓扑，并规避瓶颈链路对性能的影响。基于这一动机，本文提出了 BAT-Tree 算法，并将在下一节（Section~\ref&#123;sec:Design&#125;）详细介绍其设计与实现。</span><br></pre></td></tr></table></figure>
+
+<h1 id="第三节-BAT-Tree-的设计"><a href="#第三节-BAT-Tree-的设计" class="headerlink" title="第三节 BAT-Tree 的设计"></a>第三节 BAT-Tree 的设计</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">为解决异构网络下树型同步的不足并缓解单级参数服务器的多对一瓶颈，本文提出 BAT-Tree。BAT-Tree 首先依据集群拓扑信息，通过生成树算法与瓶颈感知的节点匹配在物理网络上构造通信树；随后采用镜像部署机制，由该物理树派生出一棵镜像树，并在 reduce/broadcast 两个阶段以两棵树交替指示“发送/接收”的键值对关系，使同步完全沿物理链路执行、且无需逻辑树到物理树的额外映射与补齐处理。整体设计包括三部分：</span><br><span class="line">（1）生成树算法：在物理网络上构造初始通信树结构；</span><br><span class="line">（2）节点匹配算法：以瓶颈感知为目标进行父子节点配对，规避低带宽链路；</span><br><span class="line">（3）镜像部署机制：基于通信树构造一棵镜像树，在 reduce 与 broadcast 阶段对调左右子语义，直接驱动 GPU 间的同步，确保在异构环境下的可部署性与高效性。</span><br><span class="line"></span><br><span class="line">3.2 生成树算法</span><br><span class="line"></span><br><span class="line">\subsection&#123;Spanning Tree Construction&#125;</span><br><span class="line"></span><br><span class="line">在异构的网络环境下，tree 算法的实际部署方式对训练性能有着显著影响，因此需要基于实际拓扑信息构造最优通信树。在设计生成树算法之前，需要先明确“最优通信树”的特征。根据 tree 算法的同步机制，生成树应具备以下两个特征：（1）\textbf&#123;最大权重&#125;：充分利用网络中的高带宽链路；（2）\textbf&#123;最小高度&#125;：层数尽可能少，以减少完成一次同步所需的通信步数。  </span><br><span class="line"></span><br><span class="line">当网络节点数确定时，满足最小高度要求的生成树应为一棵完全二叉树。不同于一般意义上的生成树（其节点数与网络拓扑的顶点数相等），本文所定义的生成树的叶子节点与网络顶点一一对应，而非叶子节点的值取自其两个子节点中的其中之一.  </span><br><span class="line"></span><br><span class="line">图论中经典的生成树算法如 Prime和Kruskal~\cite&#123;kruskal1956shortest&#125;只能保证权重最大，但无法确保生成完全二叉树。此外，其节点构成也不符合本文的需求。因此，我们设计了一种\textbf&#123;简单高效的生成树算法&#125;。  </span><br><span class="line"></span><br><span class="line">该算法自根节点开始，自上而下逐级构造，对应于 tree 算法的 broadcast 阶段，reduce 阶段同样可基于该树完成同步。在构造过程中，算法维护两个集合：（1）已加入生成树的节点集合 $U$；（2）未加入生成树的节点集合 $V$。初始时，所有节点均在 $V$ 中。随着执行逐步将节点移入 $U$，直至所有节点被纳入树结构。其中每一级的构造过程均建模为 $U$ 与 $V$ 间的一个二分图匹配问题。  </span><br><span class="line"></span><br><span class="line">对于任意网络拓扑，可将其抽象为一个有向加权图，顶点表示计算节点（如 GPU），边权重表示链路带宽，其数学形式通常为邻接矩阵，作为算法输入。  </span><br><span class="line"></span><br><span class="line">算法流程如下：  </span><br><span class="line">1) 在邻接矩阵中找到权重最大的边，取其起点 $R$ 作为根节点，并将 $R$ 从 $V$ 移至 $U$；  </span><br><span class="line">2) 在 $V$ 中选取 $N=|U|$ 个节点，与 $U$ 中的节点进行一一匹配，得到匹配对：$\&#123;(u_i, v_j) \mid u_i \in U, v_j \in V\&#125;;$</span><br><span class="line">3) 将匹配到的 $v_j$ 节点作为 $u_i$ 的子节点加入生成树，并移至 $U$；  </span><br><span class="line">4) 重复以上过程，直到 $V$为空，生成树构造完成。  </span><br><span class="line"></span><br><span class="line">若设网络中的计算节点数为 $S$，当 $S$ 为 $2$ 的幂时，构造过程需进行 $\log_2 S$ 轮匹配。第 $k$ 轮匹配时（$1 \leq k \leq \log_2 S$），集合 $U$ 中包含 $2^&#123;k-1&#125;$ 个节点，集合 $V$ 包含 $S - 2^&#123;k-1&#125;$ 个节点，二者构成一轮二分图匹配。特别地，当 $k=\log_2 S$ 时，$U$ 与 $V$ 节点数相等，所有节点均能完成匹配。  </span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:spanning_all&#125; 展示了生成树的构造过程与结果，其中 (a)–(d) 表示 8 节点系统中前四轮的二分图匹配，(e) 为最终的完全二叉树结果。(f)–(g) 则展示了 10 节点系统中额外一轮匹配的情形，可以看到当节点数不为 $2$ 的幂时，只需额外增加一轮匹配即可完成生成树的构造。由此可见，该方案能够适用于任意规模的计算节点，具备良好的扩展性。</span><br><span class="line">\begin&#123;figure*&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \includegraphics[width=0.99\textwidth]&#123;figures/spanning_all.png&#125;</span><br><span class="line">    \caption&#123;Spanning tree construction process. (a)–(d) represent successive rounds of bipartite matching for an 8-node system, and (e) shows the final spanning tree. (f)–(g) illustrate the 10-node case, where one extra round of matching is required to handle non-power-of-two node counts.&#125;</span><br><span class="line">    \label&#123;fig:spanning_all&#125;</span><br><span class="line">\end&#123;figure*&#125;</span><br><span class="line"></span><br><span class="line">要说明的是，图~\ref&#123;fig:spanning_all&#125; 仅展示了生成树构造过程的整体逻辑，具体的匹配规则将在下一节中详细介绍。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;节点匹配算法&#125;</span><br><span class="line"></span><br><span class="line">深度学习模型的训练是一个迭代式的渐近寻优过程。每一次反向传播计算完成后，都需要进行一次参数同步，因此同步算法的执行效率直接决定了系统整体的训练性能。在 tree 算法的多级同步机制中，以 reduce 阶段为例，每一级的通信都由若干通信对并发执行，其中一个节点作为 \emph&#123;发送方&#125; 完成数据传输，另一个节点作为 \emph&#123;接收方&#125; 完成聚合。需要注意的是，只有当本级中所有通信对均完成同步后，系统才能进入下一级通信。换言之，tree 算法的整体执行时间取决于各级中同步最慢的通信对。</span><br><span class="line"></span><br><span class="line">根据上一节中生成树的构造方案，每一级的构建过程可抽象为两个集合（已加入生成树的集合 $U$ 与未加入的集合 $V$）之间的二分图匹配问题。匹配方式将直接影响该级的同步完成时间。在图论中，二分图匹配的基本原则是：两个集合中的节点可以两两配对形成匹配边，但每个节点最多只能与一个节点匹配。当匹配边数达到最大时称为 \textbf&#123;最大匹配&#125;；若在所有最大匹配中进一步使匹配边权重之和最大化，则称为 \textbf&#123;最优匹配&#125;。</span><br><span class="line"></span><br><span class="line">Kuhn–Munkres (KM) 算法是解决加权二分图最优匹配问题的经典方法，时间复杂度约为 $O(n^3)$。该算法的核心思想是：当匹配发生冲突时，通过寻找增广路径并调整顶点权值，不断扩大二分子图的可匹配边集，直至获得最大权重匹配。其基本执行过程如图~\ref&#123;fig:KM_flow&#125; 所示。</span><br><span class="line"></span><br><span class="line">在本文 tree 算法的场景下，设某一级构造过程中已加入生成树的节点集合为 $U$，未加入生成树的节点集合为 $V$。若采用 KM 算法求解该层的匹配，其优化目标可形式化为下面的加权最优匹配问题：</span><br><span class="line">\begin&#123;align&#125;</span><br><span class="line">\max \;&amp; \sum_&#123;i\in U&#125;\sum_&#123;j\in V&#125; w(i,j)\, a_&#123;ij&#125; \tag&#123;4-1&#125;\label&#123;eq:mwmm&#125;\\</span><br><span class="line">\text&#123;s.t.&#125;\;&amp; \sum_&#123;i\in U&#125; a_&#123;ij&#125;=1,\quad j\in V \label&#123;eq:mwmm-con1&#125;\\</span><br><span class="line">&amp; \sum_&#123;j\in V&#125; a_&#123;ij&#125;=1,\quad i\in U \label&#123;eq:mwmm-con2&#125;</span><br><span class="line">\end&#123;align&#125;</span><br><span class="line">其中，$a_&#123;ij&#125;\in\&#123;0,1\&#125;$ 表示边 $(i,j)$ 是否被选中，$w(i,j)$ 表示边的带宽。</span><br><span class="line"></span><br><span class="line">然而，\eqref&#123;eq:mwmm&#125;–\eqref&#123;eq:mwmm-con2&#125; 最大化的是匹配边权重的\emph&#123;总和&#125;，并不一定能带来最优的同步性能。由于系统必须等待最慢通信对完成，整体效率实际上受制于 \textbf&#123;瓶颈链路&#125;。换言之，KM 算法得到的“最大权匹配”并非本文场景下的“最优匹配”。  </span><br><span class="line">如图~\ref&#123;fig:matching_example&#125; 所示，集合 $U=\&#123;A,B\&#125;$，集合 $V=\&#123;a,b\&#125;$，边权表示带宽。两种匹配方式如表~\ref&#123;tab:match_compare&#125; 所示：方案（二）的权重和更大，但最小边权更小，从同步角度更不利。</span><br><span class="line"></span><br><span class="line">因此，本文将问题建模为 \textbf&#123;瓶颈匹配（Bottleneck Matching）&#125;，目标是在所有可行匹配方案中最大化匹配结果的最小边权：</span><br><span class="line">\begin&#123;align&#125;</span><br><span class="line">\max \;&amp; \min_&#123;\,i\in U,\, j\in V:\, a_&#123;ij&#125;=1&#125;\; w(i,j) \tag&#123;4-4&#125;\label&#123;eq:bm-obj&#125;\\</span><br><span class="line">\text&#123;s.t.&#125;\;&amp; \sum_&#123;i\in U&#125; a_&#123;ij&#125;=1,\quad j\in V \label&#123;eq:bm-con1&#125;\\</span><br><span class="line">&amp; \sum_&#123;j\in V&#125; a_&#123;ij&#125;=1,\quad i\in U \label&#123;eq:bm-con2&#125;</span><br><span class="line">\end&#123;align&#125;</span><br><span class="line"></span><br><span class="line">为此，本文提出 \textbf&#123;瓶颈感知匹配算法&#125;（Bottleneck-Aware Matching, BAM）：  </span><br><span class="line">(1) 引入全局带宽阈值 $t$，仅保留 $w(i,j)\ge t$ 的边参与匹配；  </span><br><span class="line">(2) 在阈值子图上使用匈牙利算法寻找最大匹配；  </span><br><span class="line">(3) 基于匹配是否成功，通过二分查找动态调整 $t$（失败则降低，成功则升高），直至收敛；  </span><br><span class="line">(4) 最终由保证最大匹配成功的最大阈值 $t^\star$ 给出结果。算法流程如算法~\ref&#123;alg:bottleneck&#125; 所示。</span><br><span class="line"></span><br><span class="line">与 KM 相比，BAM 主要改进有两点：（i）\textbf&#123;全局阈值机制&#125;：统一筛选边，避免低带宽链路成为瓶颈；（ii）\textbf&#123;高效搜索策略&#125;：在边权集合上采用二分查找快速定位最优阈值。</span><br><span class="line"></span><br><span class="line">此外，当系统总节点数 $S$ 不是 $2$ 的幂时，生成树构造需执行 $\log_2 S + 1$ 次匹配。前 $\log_2 S$ 次满足 $|U|\le|V|$；最后一轮通常 $|U|&gt;|V|$，为保证算法正确性，可交换 $U$ 与 $V$ 的角色，匹配完成后再将结果还原。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \includegraphics[width=0.85\linewidth]&#123;figures/KM_flow.pdf&#125;</span><br><span class="line">    \caption&#123;KM 算法流程示意图。&#125;</span><br><span class="line">    \label&#123;fig:KM_flow&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \includegraphics[width=0.5\linewidth]&#123;figures/matching_example.pdf&#125;</span><br><span class="line">    \caption&#123;匹配示例。边权表示链路带宽。方案 (1)：$A\!-\!a$, $B\!-\!b$；方案 (2)：$A\!-\!b$, $B\!-\!a$。&#125;</span><br><span class="line">    \label&#123;fig:matching_example&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">\begin&#123;table&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \caption&#123;两种匹配方式的比较（指标：权重和与最小边权）&#125;</span><br><span class="line">    \label&#123;tab:match_compare&#125;</span><br><span class="line">    \begin&#123;tabular&#125;&#123;ccc&#125;</span><br><span class="line">        \toprule</span><br><span class="line">        匹配方式 &amp; 权重和 &amp; 最小边权 \\</span><br><span class="line">        \midrule</span><br><span class="line">        方案（一） &amp; 9  &amp; 4 \\</span><br><span class="line">        方案（二） &amp; 10 &amp; 3 \\</span><br><span class="line">        \bottomrule</span><br><span class="line">    \end&#123;tabular&#125;</span><br><span class="line">\end&#123;table&#125;</span><br><span class="line"></span><br><span class="line">\begin&#123;algorithm&#125;[t]</span><br><span class="line">\caption&#123;Bottleneck Matching&#125;</span><br><span class="line">\label&#123;alg:bottleneck&#125;</span><br><span class="line">\KwIn&#123;$U$: left-side nodes; $V$: right-side nodes; $L$: edge weights in bipartite graph; $M$: adjacency matrix of topology&#125;</span><br><span class="line">\KwOut&#123;$res$: best matching result&#125;</span><br><span class="line"></span><br><span class="line">$low \gets 0$, $high \gets len(L)-1$\;</span><br><span class="line">\While&#123;$low \leq high$&#125;&#123;</span><br><span class="line">    $mid \gets (low + high)/2$\;</span><br><span class="line">    $threshold \gets L[mid]$ \tcp*&#123;Current threshold&#125;</span><br><span class="line">    reset $u.match=None$, $v.match=None$ for all $u \in U, v \in V$\;</span><br><span class="line">    $cnt \gets 0$\;</span><br><span class="line">    \For&#123;each $u \in U$&#125;&#123;</span><br><span class="line">        reset $v.visit=false$ for each $v \in V$\;</span><br><span class="line">        \If&#123;MATCH($u$, $threshold$)&#125;&#123;</span><br><span class="line">            $cnt \gets cnt+1$\;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    \If&#123;$cnt =$ max matches&#125;&#123;</span><br><span class="line">        $low \gets mid+1$\;</span><br><span class="line">        record current result $res$\;</span><br><span class="line">    &#125;</span><br><span class="line">    \Else&#123;</span><br><span class="line">        $high \gets mid-1$\;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">\BlankLine</span><br><span class="line">\SetKwProg&#123;Fn&#125;&#123;Function&#125;&#123;:&#125;&#123;&#125;</span><br><span class="line">\Fn&#123;MATCH($u$, $threshold$)&#125;&#123;</span><br><span class="line">    \For&#123;each $v \in V$&#125;&#123;</span><br><span class="line">        \If&#123;$v.visit$&#125;&#123;continue\;&#125;</span><br><span class="line">        \If&#123;$M[u][v] \geq threshold$&#125;&#123;</span><br><span class="line">            $v.visit \gets true$\;</span><br><span class="line">            \If&#123;$v.match$ is None or MATCH($v.match$, $threshold$)&#125;&#123;</span><br><span class="line">                $u.match \gets v$\;</span><br><span class="line">                $v.match \gets u$\;</span><br><span class="line">                \Return true\;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    \Return false\;</span><br><span class="line">&#125;</span><br><span class="line">\end&#123;algorithm&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;镜像部署机制&#125;</span><br><span class="line"></span><br><span class="line">基于前文提出的生成树算法与节点匹配算法，对于给定的拓扑信息输入，可以构造出一棵最优通信树，树中的每一个节点对应网络中的一个计算节点（如 GPU），反映了数据在物理设备之间的实际通信关系。与结构规则明确的逻辑树不同，物理树的节点分布具有更强的随机性，且随网络状态动态变化。因此，若要在物理拓扑上实现树型同步，往往需要在逻辑树与物理树之间建立映射关系：首先基于逻辑树算法确定进程间的通信模式，再通过映射关系将其转换为物理节点间的实际通信。尽管该方案可行，但其实现复杂，并在节点数不是 $2$ 的幂时需额外处理，从而增加了开销。</span><br><span class="line"></span><br><span class="line">为此，本文提出一种更为简洁高效的\textbf&#123;镜像部署机制&#125;（Mirrored Deployment）。该机制避免逻辑树与物理树之间的间接映射，而是直接基于物理拓扑构建同步通信结构。具体而言，在生成树的基础上进一步构建一棵镜像树，如图~\ref&#123;fig:mirror_tree&#125; 所示，其中 Tree1 对应图~\ref&#123;fig:spanning_all&#125;(e) 的生成树，Tree2 则为其镜像结构。两棵树在每一级中的左右子节点互为镜像，分别对应“发送–接收”与“接收–发送”的角色映射。在 reduce 阶段，同步过程自叶子节点逐级汇聚至根节点，此时 Tree1 的左右子节点分别表示接收方与发送方，而 Tree2 的角色正好相反；进入 broadcast 阶段后，通信自根节点逐级向下扩散，此时两棵树的角色再度交换，实现完整的收发对称关系。</span><br><span class="line"></span><br><span class="line">在实际执行中，每一计算节点仅需判断自身位于 Tree1 或 Tree2 的左子节点中，以此决定其在当前阶段是执行发送还是接收操作，通信对象即为其兄弟节点。若某一节点在当前层级的两棵树中均不存在，则本轮不发生通信。值得注意的是，即使节点总数不是 $2$ 的幂，上述通信规则亦可自然适配，无需额外处理，因而在异构环境下展现出更高的实现效率与可扩展性。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \includegraphics[width=0.85\linewidth]&#123;figures/mirror_tree.pdf&#125;</span><br><span class="line">    \caption&#123;镜像部署机制示意图。(a) Tree1；(b) Tree2。两棵树在 reduce 与 broadcast 阶段交替使用，实现收发对称的同步过程。&#125;</span><br><span class="line">    \label&#123;fig:mirror_tree&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="第四节-评估"><a href="#第四节-评估" class="headerlink" title="第四节 评估"></a>第四节 评估</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">\section&#123;实验评估&#125;</span><br><span class="line">\label&#123;sec:experiments&#125;</span><br><span class="line"></span><br><span class="line">\subsection&#123;实验平台搭建&#125;</span><br><span class="line"></span><br><span class="line">本文的实验在基于 \texttt&#123;Docker&#125; 的容器化环境中完成，如图~\ref&#123;fig:docker_env&#125; 所示。每个容器均模拟一个物理计算节点，并分配独立的虚拟网卡（\texttt&#123;eth0&#125;），通过虚拟以太对（\texttt&#123;veth&#125;）与软件交换桥（\texttt&#123;docker0&#125;）相连。该方式既保证了容器之间的隔离性，又能灵活地配置网络拓扑结构。为确保一一对应，每个容器均绑定至一张独立的 GPU。实验服务器配备 8 张 NVIDIA Tesla K80 GPU（显存 12 GB），每张 GPU 可划分为两个设备，因而最多可支持 16 个容器并发运行，从而构建规模可控的分布式训练环境。  </span><br><span class="line"></span><br><span class="line">为模拟异构网络带宽环境，本文采用 Linux Traffic Control (TC) 对部分虚拟链路施加速率限制，并使用 \texttt&#123;iperf&#125; 工具对容器间的实际带宽进行测量，得到的带宽矩阵作为本文所提 BAT-Tree 算法的输入。  </span><br><span class="line"></span><br><span class="line">软件环境方面，实验基于 \texttt&#123;PyTorch 1.8.1&#125; 框架，配合 \texttt&#123;CUDA 10.2&#125; 与 \texttt&#123;cuDNN 7&#125;，并集成 NCCL 库以实现高效的集合通信。测试模型选择了三类经典卷积神经网络：\textbf&#123;ResNet18&#125;、\textbf&#123;VGG16&#125; 与 \textbf&#123;AlexNet&#125;，并基于 CIFAR-10 数据集进行训练。这三类模型分别代表了不同的计算与通信特征：ResNet18 偏向计算密集型，而 VGG16 与 AlexNet 更具通信敏感性，因此能够全面验证 BAT-Tree 算法在不同工作负载下的有效性。  </span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[t]</span><br><span class="line">	\centering</span><br><span class="line">	\includegraphics[width=0.85\linewidth]&#123;figures/docker_env.pdf&#125;</span><br><span class="line">	\caption&#123;基于 Docker 的实验环境示意图。每个容器绑定至独立 GPU，并通过虚拟以太设备 (\texttt&#123;veth&#125;) 相互连接，以模拟多样化的网络条件。&#125;</span><br><span class="line">	\label&#123;fig:docker_env&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;实验平台与环境&#125;</span><br><span class="line"></span><br><span class="line">为验证本文提出的拓扑感知树型同步算法的有效性与必要性，本节介绍实验平台的搭建方式以及实验所依赖的硬件环境与对象。</span><br><span class="line"></span><br><span class="line">基于 Pytorch 的分布式训练，从通信框架选择的角度通常包含三种实现方式：</span><br><span class="line">\textit&#123;DistributedDataParallel (DDP)&#125;、\textit&#123;RPC&#125; 和 \textit&#123;集合通信库&#125;。其中，DDP 是 Pytorch</span><br><span class="line">提供的基于数据并行模式的接口，以 ring allreduce 作为底层通信架构，对参数同步过程作了高度封装，</span><br><span class="line">用户使用较为友好，但其实现与 Pytorch 框架自身高度耦合，难以满足研究者对其进行直接修改的需求；</span><br><span class="line">RPC 框架在本文第三章中被用于构建单级参数服务器，但当同步级数增多时，系统通信逻辑将更为复杂，</span><br><span class="line">大量 RPC 调用也会导致通信效率下降。</span><br><span class="line"></span><br><span class="line">基于上述考虑，本文采用 Pytorch 提供的集合通信库实现树型同步算法，</span><br><span class="line">并将其嵌入实际深度学习模型的训练过程，以完成方案的部署与验证。集合通信最早源于高性能计算，指一对多或多对多的通信模式，通常可通过 MPI 并行编程实现。</span><br><span class="line">在 Pytorch 框架中，相关集合通信原语已被移植至 \texttt&#123;torch.distributed&#125; 模块，</span><br><span class="line">包括 \texttt&#123;Broadcast&#125;、\texttt&#123;Scatter&#125;、\texttt&#123;Gather&#125;、\texttt&#123;Reduce&#125; 等，</span><br><span class="line">用于支持 GPU 上的高效张量传输。然而，考虑到 tree 算法的同步过程本质上由多个点对点通信对组成，</span><br><span class="line">本文未使用上述高阶集合通信操作，而是基于更底层的 \texttt&#123;send&#125;/\texttt&#123;recv&#125; 原语完成数据收发，</span><br><span class="line">并保证每个执行 \texttt&#123;send&#125; 的节点都有唯一对应的 \texttt&#123;recv&#125; 节点，从而确保同步过程的顺利执行。</span><br><span class="line"></span><br><span class="line">为验证拓扑感知的必要性与有效性，本文基于 \texttt&#123;docker&#125; 容器化技术在单台服务器上构建带宽异构的实验环境，</span><br><span class="line">如图~\ref&#123;fig:docker_env&#125; 所示。每个容器模拟一台物理节点，配备一张虚拟网卡 \texttt&#123;eth0&#125;，</span><br><span class="line">通过桥接模式实现互联。由于 NCCL 通信后端要求每个进程独占一张 GPU，</span><br><span class="line">本文将单容器绑定一张 GPU，以在配备 8 张 NVIDIA Tesla K80 的服务器上最多支持 16 个容器。</span><br><span class="line">与直接在物理机上运行训练任务相比，容器通信需额外经过虚拟网卡 \texttt&#123;eth0&#125;，再通过机内 NVLink</span><br><span class="line">发往目标节点。为进一步模拟异构场景，本文利用 Linux 内核提供的 \texttt&#123;Traffic Control (TC)&#125; 工具</span><br><span class="line">对容器间的带宽进行动态调节，从而实现真实集群环境下的异构网络模拟。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \includegraphics[width=0.85\linewidth]&#123;figures/docker_env.pdf&#125;</span><br><span class="line">    \caption&#123;Docker-based experimental environment for simulating heterogeneous bandwidth. Each container emulates a physical node with a virtual NIC \texttt&#123;eth0&#125;, interconnected via bridge mode. Bandwidth is controlled using Linux \texttt&#123;TC&#125; to simulate heterogeneous links.&#125;</span><br><span class="line">    \label&#123;fig:docker_env&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">subsubsection&#123;实验环境与对象&#125;</span><br><span class="line"></span><br><span class="line">实验平台部署在一台配备 8 张 NVIDIA Tesla K80 (12GB) GPU 的服务器上。通过 \texttt&#123;docker&#125; 容器化方式，每张物理显卡可虚拟化出两个 GPU 卡，最多支持 16 容器同时运行分布式任务。实验所使用的软件环境为 \texttt&#123;pytorch:1.8.1-cuda10.2-cudnn7-devel&#125; 镜像。</span><br><span class="line"></span><br><span class="line">实验对象包括 CIFAR-10 数据集以及三类典型卷积神经网络模型：ResNet18、Vgg16 和 AlexNet。其中 ResNet18 用于计算密集型任务，Vgg16 和 AlexNet 用于通信密集型任务，具有代表性。实验评估指标为系统吞吐量，即系统每秒所能处理的样本数，用于对比不同参数同步策略下的训练效率。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">\subsubsection&#123;同步算法敏感性分析&#125;</span><br><span class="line"></span><br><span class="line">Tree 算法和 Ring 算法被广泛视为分布式深度学习中最具代表性的两类参数同步策略。二者均源自经典的并行通信研究，Ring 算法通常被认为具有带宽最优性，而 Tree 算法则在延迟方面表现更为优越。为进一步分析这两种算法在实际训练环境中的性能差异，本文通过理论推导与实验对比展开说明。</span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:ring_tree&#125; 展示了不同消息规模下，两种算法在 16 节点集群上运行的同步完成时间（Synchronization Completion Time, SCT）。从结果可以观察到，随着消息规模的增大，两种算法的同步耗时均呈递增趋势。当消息规模较小时（小于 1024），Ring 算法由于能充分利用链路带宽，其同步延迟更低；而当消息规模进一步增大时，Tree 算法在延迟优势上逐渐体现出来，在边界较大消息下的表现优于 Ring 算法。</span><br><span class="line"></span><br><span class="line">上述现象可以通过两种算法的通信开销模型加以解释。设 $S$ 为传输数据大小，$N$ 为节点规模，$t_\alpha$ 为固定通信延迟，$t_\beta$ 为单位数据传输耗时。对于 Ring 算法，其参数同步过程需要经历 $2(N-1)$ 步，每一步传输的数据量为 $S/N$，因此其总通信开销可表示为：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">T_&#123;\text&#123;ring&#125;&#125; = 2(N-1)t_\alpha + 2(N-1)\frac&#123;S&#125;&#123;N&#125;t_\beta .</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">相比之下，Tree 算法的参数同步过程需要经历 $2\log_2 N$ 步，每一步传输的数据量为 $S$，其总通信开销为：</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">T_&#123;\text&#123;tree&#125;&#125; = 2\log_2 N \, t_\alpha + 2\log_2 N \, S t_\beta .</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line"></span><br><span class="line">由此可见，Ring 算法的延迟开销随节点规模线性增长，而 Tree 算法仅为对数级；相应地，前者在小消息场景下更具优势，而后者在大规模和大消息场景下更为高效。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \includegraphics[width=0.7\linewidth]&#123;figures/ring_vs_tree.pdf&#125;</span><br><span class="line">    \caption&#123;16 节点集群下 Ring 与 Tree 算法的同步完成时间对比。&#125;</span><br><span class="line">    \label&#123;fig:ring_tree&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br><span class="line">综上，Ring 算法更适用于小消息场景，而 Tree 算法在大消息和大规模节点下更为高效。这为后续在真实异构环境中进行的拓扑感知同步实验提供了理论支撑。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;同构环境实验&#125;</span><br><span class="line"></span><br><span class="line">在进入异构网络场景的验证之前，本文首先在同构环境下开展对比实验，</span><br><span class="line">以评估树型同步算法在理想带宽对等条件下的性能表现。对比方案包括：</span><br><span class="line">\textit&#123;reduce\_and\_bcast&#125;（传统参数服务器架构下的先 \texttt&#123;reduce&#125; 后 \texttt&#123;broadcast&#125; 的单级同步模式），</span><br><span class="line">\textit&#123;group\_reduce&#125;（RAT$^&#123;11&#125;$ 和 PLlink$^&#123;17&#125;$ 提出的二级分层聚合策略），</span><br><span class="line">以及 \textit&#123;Tree&#125; 算法。实验部署方式与图~\ref&#123;fig:docker_env&#125; 所示的容器环境一致，</span><br><span class="line">由于同构环境下同步算法的部署方式不会对训练性能产生影响，故在该组实验中未进行拓扑感知的测试。</span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:homogeneous&#125; 展示了在 $4$ 节点与 $16$ 节点规模下，三种同步策略分别对</span><br><span class="line">ResNet18、Vgg16 与 AlexNet 模型的系统吞吐量结果。</span><br><span class="line">可以观察到，在 4 节点网络下，tree 算法和</span><br><span class="line">分组同步算法的执行过程是等价的，故二者理论上的训练速度是相同的，与实验结果一致；同时这两种方案相较于简单的单级</span><br><span class="line">同步模式都存在一定优势，在 ResNet18、Vgg16 和 AlexNet 模型上分别可获得约 2.9%、</span><br><span class="line">5.8%和 1.3%的加速效果，可见即使在通信瓶颈问题尚不严重的小规模网络中，分级</span><br><span class="line">同步思想的应用对于系统训练性能的提升仍起到一定的帮助作用。当网络规模扩大至</span><br><span class="line">16 节点时，多对一模式带来的通信瓶颈问题进一步加剧，此时不同参数同步策略下</span><br><span class="line">的训练表现差距也进一步扩大，只有 tree 算法仍能维持较高的训练吞吐，其在</span><br><span class="line">ResNet18 上较单级同步和分组同步分别可获得约 64.4%和 14.5%的性能提升，在</span><br><span class="line">Vgg16 上分别能获得约 131%和 31.7%的性能提升，在 AlexNet 上则分别可加速约 75.2%和 23.4%，由此证明了 tree 算法多级通信机制的有效性。此外对比分析三种模型的实</span><br><span class="line">验结果还可发现，tree 算法应用在 Vgg16 和 AlexNet 上的加速增益总要高于 ResNet18，</span><br><span class="line">其原因在于 ResNet18 属于计算密集型任务，自身的通信占比较低，故可优化的空间</span><br><span class="line">也较小，而 Vgg16 和 AlexNet 由于自身通信占比较高，改进参数同步机制对于训练性</span><br><span class="line">能的提升作用将更为明显。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.45\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/homo_4nodes.pdf&#125;</span><br><span class="line">        \caption&#123;4 节点网络&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \hfill</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.45\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/homo_16nodes.pdf&#125;</span><br><span class="line">        \caption&#123;16 节点网络&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \caption&#123;不同节点规模下三种同步策略的系统吞吐量对比。&#125;</span><br><span class="line">    \label&#123;fig:homogeneous&#125;</span><br><span class="line">\end&#123;figure&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">\subsection&#123;异构环境实验&#125;</span><br><span class="line"></span><br><span class="line">在异构网络条件下，同步算法的部署方式将显著影响训练表现。为验证拓扑感知的必要性与有效性，本文对部分容器的带宽进行限速以模拟真实的异构场景，并应用不同的参数同步策略展开对比。测试方案包括：单级同步（reduce\_and\_bcast）、分组同步（group\_reduce）、树型同步（Tree），以及本文提出的瓶颈感知与拓扑感知结合的同步策略（BAT-Tree）。前三者均为静态部署方式，总是基于固定逻辑拓扑执行同步；而 BAT-Tree 能根据实际网络状态动态生成合适的通信树拓扑，调整节点间的同步规则，从而获得更优训练性能。</span><br><span class="line"></span><br><span class="line">为了更全面地说明网络异构性对同步算法的影响，本文设置了两种场景：场景一对编号小于 $N/2$ 的容器限速（$N$ 为容器总数），场景二对编号为偶数的容器限速。各容器之间链路的实际吞吐量由 \texttt&#123;iperf&#125; 工具测得，并生成邻接矩阵作为 BAT-Tree 的输入。</span><br><span class="line"></span><br><span class="line">图~\ref&#123;fig:hetero_4nodes&#125; 与图~\ref&#123;fig:hetero_16nodes&#125; 分别展示了在 $4$ 节点和 $16$ 节点异构网络下，三种模型（ResNet18、Vgg16 与 AlexNet）在不同同步策略下的系统吞吐量表现。</span><br><span class="line"></span><br><span class="line">从对比结果可以看到，即使在同一拓扑下，异构特征的差异也会显著影响参数同步效率。若训练过程中不能有效感知网络状态，将无法保证分布式训练的加速效果。进一步分析发现，在 4 节点环境下，group\_reduce 与 Tree 在两个场景下的表现互为对称，这是因为虽然逻辑实现不同，但在具体异构拓扑下的通信路径等价，因此获得了相同的吞吐量。另一方面，BAT-Tree 在两种异构场景下始终获得最优训练表现，且结果接近。这表明对于给定网络拓扑，最优同步路径可能并不唯一，但最大吞吐量是确定的，因此 BAT-Tree 的结果也从侧面印证了其最优性。</span><br><span class="line"></span><br><span class="line">\begin&#123;figure*&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.32\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/hetero_resnet18.pdf&#125;</span><br><span class="line">        \caption&#123;ResNet18&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \hfill</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.32\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/hetero_vgg16.pdf&#125;</span><br><span class="line">        \caption&#123;Vgg16&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \hfill</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.32\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/hetero_alexnet.pdf&#125;</span><br><span class="line">        \caption&#123;AlexNet&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \caption&#123;4 节点异构环境下不同参数同步策略的系统吞吐量对比。&#125;</span><br><span class="line">    \label&#123;fig:hetero_4nodes&#125;</span><br><span class="line">\end&#123;figure*&#125;</span><br><span class="line"></span><br><span class="line">\begin&#123;figure*&#125;[t]</span><br><span class="line">    \centering</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.32\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/hetero_resnet18.pdf&#125;</span><br><span class="line">        \caption&#123;ResNet18&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \hfill</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.32\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/hetero_vgg16.pdf&#125;</span><br><span class="line">        \caption&#123;Vgg16&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \hfill</span><br><span class="line">    \begin&#123;subfigure&#125;&#123;0.32\linewidth&#125;</span><br><span class="line">        \centering</span><br><span class="line">        \includegraphics[width=\linewidth]&#123;figures/hetero_alexnet.pdf&#125;</span><br><span class="line">        \caption&#123;AlexNet&#125;</span><br><span class="line">    \end&#123;subfigure&#125;</span><br><span class="line">    \caption&#123;16 节点异构环境下不同参数同步策略的系统吞吐量对比。&#125;</span><br><span class="line">    \label&#123;fig:hetero_16nodes&#125;</span><br><span class="line">\end&#123;figure*&#125;</span><br><span class="line"></span><br><span class="line">当网络规模扩大至 16 节点时，通信瓶颈问题进一步加剧。单级同步模式受影响最严重，吞吐量急剧下降；分组同步通过组内-组间两级聚合方式在一定程度上缓解了多对一并发通信的压力，以场景一为例在 ResNet18、Vgg16 和 AlexNet 上分别提升约 51.1\%、92.4\% 和 40.6\%。Tree 算法通过分层聚合进一步减轻了根节点带宽压力，带来更大性能提升，在三种模型上分别获得约 69.8\%、121.1\% 和 63.7\% 的加速。相比之下，BAT-Tree 能有效规避低带宽链路，进一步提升训练吞吐量，在三种模型上分别实现约 84.9\%、121.7\% 和 88.7\% 的加速，从而验证了BAT-Tree的有效性。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">\section&#123;结论&#125;</span><br><span class="line">\label&#123;sec:conclusion&#125;</span><br><span class="line"></span><br><span class="line">本文针对分布式深度学习中参数同步过程的通信瓶颈与网络异构问题，</span><br><span class="line">提出了一种瓶颈感知、拓扑感知的树型同步算法（BAT-Tree）。</span><br><span class="line">该方法能够根据实际带宽动态生成通信树拓扑，并结合镜像部署机制，</span><br><span class="line">有效提升了同步的均衡性与效率。</span><br><span class="line"></span><br><span class="line">基于 \texttt&#123;PyTorch&#125; 框架和 \texttt&#123;docker&#125; 容器化环境的实验结果表明，</span><br><span class="line">在 ResNet18、Vgg16 与 AlexNet 模型上，BAT-Tree 相较于默认的单级同步机制</span><br><span class="line">在 16 节点规模下分别获得了约 $84.9\%$、$121.7\%$ 和 $88.7\%$ 的性能提升。</span><br><span class="line">结果验证了该方案在异构网络环境下的有效性与实用价值。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2025/10/01/BAT-Tree/" title="BAT-Tree" target="_blank" rel="external">http://example.com/2025/10/01/BAT-Tree/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/yxt2005" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/yxt2005" target="_blank"><span class="text-dark">Yang.x.t.</span><small class="ml-1x">XDUer</small></a></h3>
+        <div>2023级西安电子科技大学本科生，通信工程专业。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2025/09/18/MATLAB%E5%90%AF%E5%8A%A8%E9%BB%91%E6%A1%86-%E5%90%AF%E5%8A%A8%E6%85%A2-%E9%BB%98%E8%AE%A4%E6%96%87%E4%BB%B6%E5%A4%B9%E6%9B%B4%E6%94%B9/" title="MATLAB启动黑框,启动慢,默认文件夹更改"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>$</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>Maybe you could buy me a cup of coffee.</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/allipay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open alipay app scan this qrcode, buy me a coffee!</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpay.jpg" alt="Scan Qrcode" title="Scan" />
+              </div>
+              <p class="text-muted mv">Scan this qrcode</p>
+              <p class="text-grey">Open wechat app scan this qrcode, buy me a coffee!</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> alipay</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> wechat payment</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/cofess" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
